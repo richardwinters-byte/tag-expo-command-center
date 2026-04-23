@@ -1,0 +1,24 @@
+{
+  "name": "TAG Expo Command Center",
+  "short_name": "TAG Expo",
+  "description": "Licensing Expo 2026 — planning, execution, follow-through",
+  "start_url": "/today",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F2F6F6",
+  "theme_color": "#0B2F31",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

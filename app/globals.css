@@ -1,0 +1,363 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #F2F6F6;
+    --foreground: #14171A;
+    --surface: #FFFFFF;
+    --border: rgba(11, 47, 49, 0.08);
+    --muted: #6B7280;
+  }
+
+  .dark {
+    --background: #0A1415;
+    --foreground: #E6EEEE;
+    --surface: #132022;
+    --border: rgba(255, 255, 255, 0.08);
+    --muted: #A0ADB6;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  body {
+    @apply font-sans antialiased;
+    background-color: var(--background);
+    color: var(--foreground);
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
+    font-weight: 600;
+  }
+
+  h1 { @apply text-2xl md:text-3xl; letter-spacing: -0.02em; }
+  h2 { @apply text-xl md:text-2xl; letter-spacing: -0.015em; }
+  h3 { @apply text-lg md:text-xl; letter-spacing: -0.01em; }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+    font-feature-settings: 'zero';
+  }
+
+  [type='button'], [type='submit'], button {
+    -webkit-appearance: none;
+  }
+
+  input, textarea, select {
+    @apply bg-white border border-hairline rounded-btn px-3 py-2 text-sm;
+    @apply focus:outline-none focus:ring-2 focus:ring-tag-700 focus:border-transparent;
+    min-height: 44px;
+  }
+
+  .dark input, .dark textarea, .dark select {
+    background-color: #1B2A2C;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #E6EEEE;
+  }
+
+  .dark input::placeholder, .dark textarea::placeholder {
+    color: #6B7785;
+  }
+
+  textarea {
+    min-height: 80px;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-btn font-medium text-sm transition-colors;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    min-height: 44px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .btn-primary {
+    @apply btn bg-tag-900 text-white hover:bg-tag-800;
+  }
+  .dark .btn-primary {
+    @apply bg-tag-700 hover:bg-tag-800;
+  }
+  .btn-accent {
+    @apply btn bg-tag-gold text-white hover:bg-tag-gold-dark;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-tag-900 hover:bg-tag-100;
+  }
+  .dark .btn-ghost {
+    color: #E6EEEE;
+  }
+  .dark .btn-ghost:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+  .btn-outline {
+    @apply btn bg-white border border-hairline text-tag-900 hover:bg-tag-50;
+  }
+  .dark .btn-outline {
+    background-color: #132022;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #E6EEEE;
+  }
+  .dark .btn-outline:hover {
+    background-color: #1B2A2C;
+  }
+  .btn-sm {
+    min-height: 36px;
+    @apply text-xs px-3;
+  }
+
+  .card {
+    @apply bg-white rounded-card border border-hairline;
+  }
+  .dark .card {
+    background-color: #132022;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .card-p {
+    @apply p-4 md:p-5;
+  }
+
+  .tier-badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide;
+  }
+  .tier-tier_1 { @apply bg-tag-gold text-white; }
+  .tier-tier_2 { @apply bg-tag-700 text-white; }
+  .tier-tier_3 { @apply bg-tag-100 text-tag-900; }
+  .tier-nice_to_meet { @apply bg-tag-50 text-tag-800 border border-hairline; }
+  .tier-opportunistic { @apply bg-white text-tag-ink border border-hairline; }
+  .tier-retailer { @apply bg-tag-800 text-white; }
+
+  .dark .tier-tier_3 { background-color: #1E3032; color: #E6EEEE; }
+  .dark .tier-nice_to_meet { background-color: #132022; color: #C0CCCC; border-color: rgba(255,255,255,0.08); }
+  .dark .tier-opportunistic { background-color: #0A1415; color: #E6EEEE; border-color: rgba(255,255,255,0.08); }
+
+  .temp-cold { @apply bg-gray-100 text-gray-700; }
+  .temp-warm { @apply bg-amber-50 text-amber-800; }
+  .temp-hot { @apply bg-red-50 text-red-800; }
+
+  .dark .temp-cold { background-color: #1E2A2C; color: #A6B0B8; }
+  .dark .temp-warm { background-color: #2B2210; color: #E5B867; }
+  .dark .temp-hot { background-color: #2E1413; color: #E07A68; }
+
+  .pill {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+
+  .nav-link {
+    @apply flex flex-col items-center gap-0.5 px-2 py-1.5 text-[11px] font-medium;
+  }
+  .nav-link-active {
+    @apply text-tag-900;
+  }
+  .dark .nav-link-active {
+    color: #E6EEEE;
+  }
+  .nav-link-inactive {
+    @apply text-tag-cold;
+  }
+
+  .section-header {
+    @apply text-[11px] font-semibold uppercase tracking-wider text-tag-700 mb-2;
+  }
+  .dark .section-header {
+    color: #8FB0B2;
+  }
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Skeleton pulse */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+.skeleton {
+  @apply bg-tag-100 rounded;
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+.dark .skeleton { background-color: #1E2A2C; }
+
+/* ============================================================
+   Dark mode utility overrides
+   Flips the tag-* color system wholesale when .dark is present
+   on <html>. Keeps component files untouched.
+   ============================================================ */
+.dark .bg-white { background-color: #132022 !important; }
+.dark .bg-tag-50 { background-color: #0A1415 !important; }
+.dark .bg-tag-100 { background-color: #1E2A2C !important; }
+.dark .bg-tag-800 { background-color: #0A1415 !important; }
+.dark .bg-tag-900 { background-color: #0A1415 !important; }
+
+.dark .text-tag-ink { color: #E6EEEE !important; }
+.dark .text-tag-900 { color: #E6EEEE !important; }
+.dark .text-tag-800 { color: #C0D0D2 !important; }
+.dark .text-tag-700 { color: #8FB0B2 !important; }
+.dark .text-tag-cold { color: #A0ADB6 !important; }
+
+.dark .border-hairline,
+.dark [class*="border-[rgba(11,47,49"] { border-color: rgba(255,255,255,0.08) !important; }
+
+.dark .hover\:bg-tag-50:hover { background-color: #1B2A2C !important; }
+.dark .hover\:bg-tag-100:hover { background-color: #1E2A2C !important; }
+.dark .hover\:bg-white\/5:hover { background-color: rgba(255,255,255,0.06) !important; }
+
+/* Focus rings stay visible on dark */
+.dark input:focus, .dark textarea:focus, .dark select:focus {
+  outline: 2px solid #8FB0B2;
+  outline-offset: -2px;
+}
+
+/* Gold accents stay gold — they're the brand accent. Tier-1 badge, warm pill, etc. */
+/* Success/warning/error: adjust to be readable on dark */
+.dark .text-tag-success { color: #5FB88B !important; }
+.dark .text-tag-warning { color: #E5B867 !important; }
+.dark .text-tag-error { color: #E07A68 !important; }
+
+/* Print styles for Trip Report */
+@media print {
+  body { background: white; }
+  .no-print { display: none !important; }
+  .card { border: 1px solid #ccc; box-shadow: none; page-break-inside: avoid; }
+}
+
+/* =============================================================
+   DARK MODE — blanket overrides for tag-* utility classes.
+   Lets every page flip to dark without touching component code.
+   ============================================================= */
+.dark .text-tag-ink { color: #E6EEEE; }
+.dark .text-tag-900 { color: #E6EEEE; }
+.dark .text-tag-800 { color: #D4DFDF; }
+.dark .text-tag-700 { color: #8FB0B2; }
+.dark .text-tag-cold { color: #A0ADB6; }
+.dark .text-tag-100 { color: #C0CCCC; }
+.dark .text-tag-gold-dark { color: #E5B867; }
+.dark .text-tag-success { color: #6ECF9C; }
+.dark .text-tag-error { color: #E07A68; }
+
+.dark .bg-tag-50 { background-color: #0F1D1F; }
+.dark .bg-tag-100 { background-color: #1B2A2C; }
+.dark .bg-tag-900 { background-color: #0A1415; }
+.dark .bg-tag-800 { background-color: #0E1E20; }
+.dark .bg-white { background-color: #132022; }
+
+/* Hover states */
+.dark .hover\:bg-tag-100:hover { background-color: #1E2D2F; }
+.dark .hover\:bg-tag-50:hover { background-color: #0F1D1F; }
+
+/* Borders — the hairline is already themed via --border, but some components
+   set explicit rgba borders. Catch the most common one. */
+.dark .border-hairline { border-color: rgba(255,255,255,0.08); }
+
+/* Hot intel card — light uses white gradient end stops; dark swaps in the
+   dark surface color so the band blends with the background. */
+.hot-intel-card {
+  background: linear-gradient(90deg, rgba(192, 138, 48, 0.10), #FFFFFF 60%, #FFFFFF);
+}
+.dark .hot-intel-card {
+  background: linear-gradient(90deg, rgba(192, 138, 48, 0.15), #132022 60%, #132022);
+}
+
+/* Timeline — hour lines, gutter divider, tap-to-create slots, meeting blocks */
+.tl-line { background-color: rgba(11, 47, 49, 0.06); }
+.dark .tl-line { background-color: rgba(255, 255, 255, 0.06); }
+
+.tl-divider { background-color: rgba(11, 47, 49, 0.08); }
+.dark .tl-divider { background-color: rgba(255, 255, 255, 0.08); }
+
+.tl-slot { background-color: transparent; transition: background-color 120ms ease; }
+.tl-slot:hover { background-color: #F2F6F6; }
+.dark .tl-slot:hover { background-color: rgba(255, 255, 255, 0.03); }
+
+.tl-block { background-color: #FFFFFF; border: 1px solid rgba(11, 47, 49, 0.12); }
+.dark .tl-block { background-color: #132022; border-color: rgba(255, 255, 255, 0.10); }
+
+/* Timeline block type tints — light mode */
+.tl-block.t-keynote { background-color: #FDF4E1; }
+.tl-block.t-party { background-color: #FAECCF; }
+.tl-block.t-internal_huddle { background-color: #EEF1F3; }
+.tl-block.t-travel { background-color: #E3EDED; }
+.tl-block.t-dinner { background-color: #F8E9D4; }
+.tl-block.t-pre_booked { background-color: #E8F2F2; }
+.tl-block.t-walk_up { background-color: #ECF4F4; }
+
+/* Timeline block type tints — dark mode (distinct, saturated enough to read text on) */
+.dark .tl-block.t-keynote { background-color: #4A3612; }
+.dark .tl-block.t-party { background-color: #3E2A14; }
+.dark .tl-block.t-internal_huddle { background-color: #222B36; }
+.dark .tl-block.t-travel { background-color: #0F2E33; }
+.dark .tl-block.t-dinner { background-color: #3A2014; }
+.dark .tl-block.t-pre_booked { background-color: #132830; }
+.dark .tl-block.t-walk_up { background-color: #17383A; }
+
+/* Dark mode: force legible text on schedule blocks */
+.dark .tl-block .text-tag-ink { color: #F2F6F6; }
+.dark .tl-block .text-tag-cold { color: #A0ADB6; }
+
+/* Dark mode: lightened accent colors for the time stamp in each block type.
+   Inline style sets the light-mode color; these override for dark. */
+.dark .tl-block.t-keynote .tl-time { color: #F0C070 !important; }
+.dark .tl-block.t-party .tl-time { color: #E4A060 !important; }
+.dark .tl-block.t-internal_huddle .tl-time { color: #B8C4CF !important; }
+.dark .tl-block.t-travel .tl-time { color: #5FB5B8 !important; }
+.dark .tl-block.t-dinner .tl-time { color: #E09060 !important; }
+.dark .tl-block.t-pre_booked .tl-time { color: #7FB5B8 !important; }
+.dark .tl-block.t-walk_up .tl-time { color: #80C5C8 !important; }
+
+/* Lead temperature tints — light mode */
+.card.lead-hot { background-color: #FFF6F3; }
+.card.lead-warm { background-color: #FEFAF0; }
+tr.lead-hot { background-color: #FFF6F3; }
+tr.lead-warm { background-color: #FEFAF0; }
+
+/* Lead temperature tints — dark mode */
+.dark .card.lead-hot { background-color: #241712; }
+.dark .card.lead-warm { background-color: #221E14; }
+.dark tr.lead-hot { background-color: #241712; }
+.dark tr.lead-warm { background-color: #221E14; }
+
+/* Targets tab — sticky section headers */
+.tgt-section-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background-color: #F2F6F6;
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-bottom: 1px solid rgba(11, 47, 49, 0.08);
+}
+@media (min-width: 768px) {
+  .tgt-section-header { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
+}
+.dark .tgt-section-header {
+  background-color: #0A1415;
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Native <select> with custom chevron and consistent sizing */
+.tgt-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2314595B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  cursor: pointer;
+}
+.dark .tgt-select {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238FB0B2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+/* Sticky section headers on the Targets page — match page bg so content
+   doesn't show through as it scrolls under. */
+.tgt-sticky-h { background-color: #EDF4F4; }
+.dark .tgt-sticky-h { background-color: #0A1415; }
