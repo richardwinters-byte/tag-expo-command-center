@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
+import { AnimatedBackground } from '@/components/app/AnimatedBackground';
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -29,8 +30,9 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-tag-900">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-tag-900 relative overflow-hidden">
+      <AnimatedBackground />
+      <div className="w-full max-w-sm relative z-10">
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-black mb-6">
             <span className="text-white font-bold text-xl tracking-tight">TAG</span>
