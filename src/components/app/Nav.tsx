@@ -16,7 +16,10 @@ const tabs = [
 export function BottomNav() {
   const pathname = usePathname();
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-[#132022] border-t border-hairline z-30 safe-bottom">
+    <nav
+      className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-[#132022] border-t border-hairline z-30"
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 8px)' }}
+    >
       <div className="flex">
         {tabs.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(href + '/');

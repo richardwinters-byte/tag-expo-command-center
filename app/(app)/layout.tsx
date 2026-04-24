@@ -12,7 +12,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen bg-tag-50">
       <SideNav user={{ name: user.name, role: user.role }} />
-      <div className="md:pl-60 lg:pl-64 min-h-screen pb-20 md:pb-0">
+      <div className="md:pl-60 lg:pl-64 min-h-screen pb-[calc(env(safe-area-inset-bottom)+5.5rem)] md:pb-0">
         {/* Desktop-only banner — mobile gets it via TopBar's bottom row */}
         <div className="hidden md:block sticky top-0 z-30">
           <NextUpBanner />

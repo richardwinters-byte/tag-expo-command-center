@@ -296,26 +296,23 @@ export function BoothMap({ meetings, date }: { meetings: MeetingWithTarget[]; da
     return 'upcoming';
   }
 
-  if (pins.length === 0) {
-    return (
-      <div className="card card-p text-center text-xs text-tag-cold">
-        No booth-based meetings on this day. Add a booth ID like <span className="font-mono">G156</span> or <span className="font-mono">N180</span> to meetings to map them.
-      </div>
-    );
-  }
-
   return (
     <div>
       <div className="card overflow-hidden">
         <div className="px-4 py-3 border-b border-hairline flex items-center justify-between flex-wrap gap-2">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-wider text-tag-gold-dark">Booth Map</div>
-            <h3 className="text-sm font-semibold leading-tight">Mandalay Bay · Bayside Halls A–D · {pins.length} stops</h3>
+            <h3 className="text-sm font-semibold leading-tight">
+              Mandalay Bay · Bayside Halls A–D
+              {pins.length > 0 && <> · {pins.length} stop{pins.length === 1 ? '' : 's'}</>}
+            </h3>
           </div>
-          <div className="flex items-center gap-2 text-[11px] text-tag-cold">
-            <Footprints size={13} className="text-tag-gold" />
-            <span>~{formatDuration(totalWalkSec)} walking total</span>
-          </div>
+          {pins.length > 0 && (
+            <div className="flex items-center gap-2 text-[11px] text-tag-cold">
+              <Footprints size={13} className="text-tag-gold" />
+              <span>~{formatDuration(totalWalkSec)} walking total</span>
+            </div>
+          )}
         </div>
 
         {/* Legend */}
@@ -559,6 +556,11 @@ export function BoothMap({ meetings, date }: { meetings: MeetingWithTarget[]; da
           <div className="px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-tag-gold-dark">
             Today's walking route
           </div>
+          {pins.length === 0 && (
+            <div className="px-4 py-4 text-center text-xs text-tag-cold">
+              No booth-based meetings on this day. Add a booth ID like <span className="font-mono">G156</span> or <span className="font-mono">N180</span> to a meeting&apos;s location and it will pin here.
+            </div>
+          )}
           {pins.map((pin, i) => {
             const state = meetingState(pin.meeting);
             const color = tierColor(pin.meeting.target?.tier);
