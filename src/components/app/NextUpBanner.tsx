@@ -247,7 +247,10 @@ export function NextUpBanner() {
 
   // ---- FULL BANNER ----
   return (
-    <div className="text-white transition-colors" style={{ backgroundColor: bg }}>
+    <div
+      className={`text-white transition-colors ${state === 'in_progress' ? 'pulse-live' : ''}`}
+      style={{ backgroundColor: bg }}
+    >
       <div className="max-w-5xl mx-auto px-4 md:px-8 py-2 flex items-center gap-2">
         {state === 'in_progress' && (
           <span className="relative flex items-center justify-center w-2.5 h-2.5 shrink-0">
