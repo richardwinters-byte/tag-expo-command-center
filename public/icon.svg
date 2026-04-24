@@ -17,30 +17,53 @@
       <stop offset="100%" stop-color="#A07B2D"/>
     </linearGradient>
 
-    <linearGradient id="pocketDark" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" stop-color="#0D4044"/>
-      <stop offset="100%" stop-color="#06272B"/>
-    </linearGradient>
-    <linearGradient id="pocketLight" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" stop-color="#1A6569"/>
-      <stop offset="100%" stop-color="#0E4347"/>
-    </linearGradient>
-
-    <radialGradient id="hub" cx="50%" cy="38%" r="75%">
-      <stop offset="0%" stop-color="#1A6569"/>
-      <stop offset="100%" stop-color="#0A2C30"/>
-    </radialGradient>
-
     <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="1.8" result="b1"/>
-      <feGaussianBlur stdDeviation="4" in="SourceGraphic" result="b2"/>
-      <feColorMatrix in="b2" type="matrix" values="1 0 0 0 0.75  0 1 0 0 0.5  0 0 1 0 0.15  0 0 0 0.5 0" result="b2c"/>
+      <feGaussianBlur stdDeviation="2.5" result="b1"/>
+      <feGaussianBlur stdDeviation="5" in="SourceGraphic" result="b2"/>
+      <feColorMatrix in="b2" type="matrix" values="1 0 0 0 0.75  0 1 0 0 0.5  0 0 1 0 0.15  0 0 0 0.65 0" result="b2c"/>
       <feMerge>
         <feMergeNode in="b2c"/>
         <feMergeNode in="b1"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Mini roulette wheel as a reusable symbol -->
+    <symbol id="rouletteMini" viewBox="-50 -50 100 100">
+      <!-- outer rim -->
+      <circle cx="0" cy="0" r="46" fill="none" stroke="#C09240" stroke-width="1.5"/>
+      <circle cx="0" cy="0" r="40" fill="none" stroke="#8A6821" stroke-width="0.8" opacity="0.7"/>
+      <!-- pocket ring -->
+      <circle cx="0" cy="0" r="32" fill="none" stroke="#0D4044" stroke-width="14"/>
+      <circle cx="0" cy="0" r="32" fill="none" stroke="#1A6569" stroke-width="14"
+              stroke-dasharray="11.2 11.2" transform="rotate(-90)"/>
+      <!-- spokes (12 thin gold lines) -->
+      <g stroke="#C09240" stroke-width="0.5" opacity="0.65">
+        <line x1="0" y1="-39" x2="0" y2="-25"/>
+        <line x1="0" y1="-39" x2="0" y2="-25" transform="rotate(30)"/>
+        <line x1="0" y1="-39" x2="0" y2="-25" transform="rotate(60)"/>
+        <line x1="0" y1="-39" x2="0" y2="-25" transform="rotate(90)"/>
+        <line x1="0" y1="-39" x2="0" y2="-25" transform="rotate(120)"/>
+        <line x1="0" y1="-39" x2="0" y2="-25" transform="rotate(150)"/>
+        <line x1="0" y1="-39" x2="0" y2="-25" transform="rotate(180)"/>
+        <line x1="0" y1="-39" x2="0" y2="-25" transform="rotate(210)"/>
+        <line x1="0" y1="-39" x2="0" y2="-25" transform="rotate(240)"/>
+        <line x1="0" y1="-39" x2="0" y2="-25" transform="rotate(270)"/>
+        <line x1="0" y1="-39" x2="0" y2="-25" transform="rotate(300)"/>
+        <line x1="0" y1="-39" x2="0" y2="-25" transform="rotate(330)"/>
+      </g>
+      <!-- inner hub -->
+      <circle cx="0" cy="0" r="22" fill="#0A2C30" stroke="#C09240" stroke-width="1"/>
+      <!-- center pin -->
+      <circle cx="0" cy="0" r="3" fill="#E6C078"/>
+      <!-- ball -->
+      <circle cx="0" cy="-38" r="2.2" fill="#E6C078"/>
+    </symbol>
 
     <!-- Card suits -->
     <symbol id="spade" viewBox="0 0 40 40">
@@ -60,97 +83,78 @@
   <!-- Background -->
   <rect width="512" height="512" rx="96" fill="url(#bg)"/>
 
-  <!-- Thin gold outer rim -->
-  <circle cx="256" cy="256" r="206" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.85"/>
-  <circle cx="256" cy="256" r="198" fill="none" stroke="url(#goldSoft)" stroke-width="0.8" opacity="0.5"/>
-
-  <!-- Pocket ring: darker teal base + alternating lighter teal (subtle, NOT gold) -->
-  <circle cx="256" cy="256" r="174"
-          fill="none"
-          stroke="url(#pocketDark)"
-          stroke-width="48"/>
-  <circle cx="256" cy="256" r="174"
-          fill="none"
-          stroke="url(#pocketLight)"
-          stroke-width="48"
-          stroke-dasharray="60.7 60.7"
-          transform="rotate(-90 256 256)"/>
-
-  <!-- Thin gold separator spokes between pockets (18 marks, subtle) -->
-  <g stroke="url(#gold)" stroke-width="0.9" opacity="0.65">
-    <line x1="256" y1="150" x2="256" y2="198"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(20 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(40 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(60 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(80 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(100 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(120 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(140 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(160 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(180 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(200 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(220 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(240 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(260 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(280 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(300 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(320 256 256)"/>
-    <line x1="256" y1="150" x2="256" y2="198" transform="rotate(340 256 256)"/>
+  <!-- Subtle starburst rays behind TAG -->
+  <g transform="translate(256 256)" opacity="0.18">
+    <g fill="url(#gold)">
+      <polygon points="0,-210 4,0 -4,0"/>
+      <polygon points="0,210 4,0 -4,0"/>
+      <polygon points="-210,0 0,-4 0,4"/>
+      <polygon points="210,0 0,-4 0,4"/>
+      <g transform="rotate(45)"><polygon points="0,-190 3,0 -3,0"/><polygon points="0,190 3,0 -3,0"/><polygon points="-190,0 0,-3 0,3"/><polygon points="190,0 0,-3 0,3"/></g>
+      <g transform="rotate(22.5)" opacity="0.5"><polygon points="0,-170 2.5,0 -2.5,0"/><polygon points="0,170 2.5,0 -2.5,0"/><polygon points="-170,0 0,-2.5 0,2.5"/><polygon points="170,0 0,-2.5 0,2.5"/></g>
+      <g transform="rotate(67.5)" opacity="0.5"><polygon points="0,-170 2.5,0 -2.5,0"/><polygon points="0,170 2.5,0 -2.5,0"/><polygon points="-170,0 0,-2.5 0,2.5"/><polygon points="170,0 0,-2.5 0,2.5"/></g>
+    </g>
   </g>
 
-  <!-- Thin inner/outer rims on the pocket ring -->
-  <circle cx="256" cy="256" r="198" fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.55"/>
-  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.55"/>
+  <!-- Compass-style diamond frame -->
+  <polygon points="256,56 456,256 256,456 56,256" fill="none" stroke="url(#gold)" stroke-width="3" opacity="0.9"/>
+  <polygon points="256,72 440,256 256,440 72,256" fill="none" stroke="url(#goldSoft)" stroke-width="1" opacity="0.55"/>
 
-  <!-- Ball — small, understated -->
-  <circle cx="256" cy="124" r="4" fill="#E6C078" opacity="0.9"/>
+  <!-- Marquee light dots -->
+  <g fill="#E6C078" filter="url(#softGlow)">
+    <circle cx="256" cy="56" r="5"/>
+    <circle cx="456" cy="256" r="5"/>
+    <circle cx="256" cy="456" r="5"/>
+    <circle cx="56" cy="256" r="5"/>
+  </g>
+  <g fill="#D8B26E" opacity="0.7">
+    <circle cx="356" cy="156" r="3"/>
+    <circle cx="356" cy="356" r="3"/>
+    <circle cx="156" cy="356" r="3"/>
+    <circle cx="156" cy="156" r="3"/>
+  </g>
 
-  <!-- Center hub -->
-  <circle cx="256" cy="256" r="118" fill="url(#hub)"/>
-  <circle cx="256" cy="256" r="118" fill="none" stroke="url(#gold)" stroke-width="1.5" opacity="0.85"/>
-  <circle cx="256" cy="256" r="110" fill="none" stroke="url(#goldSoft)" stroke-width="0.5" opacity="0.5"/>
-
-  <!-- TAG text — clean -->
-  <text x="256" y="258"
+  <!-- TAG as hero -->
+  <text x="256" y="272"
         font-family="Inter, 'Helvetica Neue', Arial, sans-serif"
-        font-size="72"
-        font-weight="800"
+        font-size="165"
+        font-weight="900"
         fill="url(#gold)"
         text-anchor="middle"
-        letter-spacing="-1.5"
+        letter-spacing="-3"
         filter="url(#neonGlow)">TAG</text>
 
-  <!-- Divider -->
-  <line x1="218" y1="280" x2="294" y2="280" stroke="url(#goldSoft)" stroke-width="0.8" opacity="0.55"/>
+  <!-- Divider line with mini roulette wheel accent in the middle -->
+  <g transform="translate(256 318)">
+    <line x1="-80" y1="0" x2="-22" y2="0" stroke="url(#gold)" stroke-width="1" opacity="0.6"/>
+    <line x1="22" y1="0" x2="80" y2="0" stroke="url(#gold)" stroke-width="1" opacity="0.6"/>
+    <use href="#rouletteMini" x="-18" y="-18" width="36" height="36"/>
+  </g>
 
   <!-- VEGAS EXPO -->
-  <text x="256" y="304"
+  <text x="256" y="370"
         font-family="Inter, 'Helvetica Neue', Arial, sans-serif"
-        font-size="13"
-        font-weight="600"
-        fill="#D8B26E"
+        font-size="30"
+        font-weight="700"
+        fill="url(#gold)"
         text-anchor="middle"
-        letter-spacing="3.5"
-        opacity="0.9">VEGAS EXPO</text>
+        letter-spacing="8">VEGAS EXPO</text>
 
   <!-- '26 -->
-  <text x="256" y="324"
+  <text x="256" y="402"
         font-family="Inter, 'Helvetica Neue', Arial, sans-serif"
-        font-size="11"
+        font-size="17"
         font-weight="500"
         fill="#D8B26E"
         text-anchor="middle"
-        letter-spacing="5"
-        opacity="0.6">&apos;26</text>
+        letter-spacing="7"
+        opacity="0.65">&apos;26</text>
 
-  <!-- Tiny center pin -->
-  <circle cx="256" cy="256" r="3" fill="url(#gold)"/>
-
-  <!-- Card suits at corners — small and subtle -->
+  <!-- Card suits — small and subtle at corners -->
   <g fill="url(#goldSoft)" opacity="0.5">
-    <use href="#spade" x="52" y="52" width="24" height="24"/>
-    <use href="#heart" x="436" y="52" width="24" height="24"/>
-    <use href="#club" x="52" y="436" width="24" height="24"/>
-    <use href="#diamond" x="436" y="436" width="24" height="24"/>
+    <use href="#spade" x="76" y="76" width="22" height="22"/>
+    <use href="#heart" x="414" y="76" width="22" height="22"/>
+    <use href="#club" x="76" y="414" width="22" height="22"/>
+    <use href="#diamond" x="414" y="414" width="22" height="22"/>
   </g>
 </svg>
