@@ -32,7 +32,7 @@ function LoginForm() {
     <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-tag-900">
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-tag-gold mb-6">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-black mb-6">
             <span className="text-white font-bold text-xl tracking-tight">TAG</span>
           </div>
           <h1 className="text-white text-2xl font-semibold tracking-tight">Expo Command Center</h1>
@@ -65,7 +65,7 @@ function LoginForm() {
                   required
                   autoFocus
                   autoComplete="email"
-                  placeholder="you@taggrading.com"
+                  placeholder="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full"
