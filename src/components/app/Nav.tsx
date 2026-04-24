@@ -81,12 +81,15 @@ export function SideNav({ user }: { user: { name: string; role: string } }) {
               key={href}
               href={href}
               className={cn(
-                'block px-3 py-2 rounded-btn text-sm transition-colors',
+                'relative block px-3 py-2 rounded-btn text-sm transition-all',
                 active
-                  ? 'bg-white/10 text-white font-medium'
+                  ? 'bg-white/10 text-white font-medium shadow-[inset_0_0_0_1px_rgba(192,138,48,0.35),0_0_12px_-2px_rgba(192,138,48,0.4)]'
                   : 'text-white/70 hover:text-white hover:bg-white/5'
               )}
             >
+              {active && (
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-tag-gold rounded-r-full" />
+              )}
               {label}
             </Link>
           );

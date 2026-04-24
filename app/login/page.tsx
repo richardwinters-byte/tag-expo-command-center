@@ -82,7 +82,7 @@ function LoginForm() {
                 {loading ? 'Sending…' : 'Send magic link'}
               </button>
               <p className="text-[11px] text-tag-cold text-center pt-2">
-                Allowlist only · 5 authorized team emails
+                Team-only access · magic link sign-in
               </p>
             </form>
           )}

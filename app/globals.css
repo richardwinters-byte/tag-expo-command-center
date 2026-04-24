@@ -114,7 +114,16 @@
   }
 
   .card {
-    @apply bg-white rounded-card border border-hairline;
+    @apply bg-white rounded-card border border-hairline transition-all duration-200;
+  }
+  /* Subtle lift when a card is hovered inside a link (or has card-interactive). Desktop only. */
+  @media (hover: hover) and (pointer: fine) {
+    a:hover > .card,
+    a:hover .card,
+    .card-interactive:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px -6px rgba(11, 47, 49, 0.12);
+    }
   }
   .dark .card {
     background-color: #132022;
