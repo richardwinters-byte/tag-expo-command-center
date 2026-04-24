@@ -424,7 +424,7 @@ export function PipelineClient({
             <Activity size={12} />
             Follow-up funnel · drag between stages
           </div>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
             {STAGE_ORDER.map((stage) => {
               const stageLeads = filtered.filter((l) => l.follow_up_stage === stage);
               const isDropTarget = dragOverStage === stage;

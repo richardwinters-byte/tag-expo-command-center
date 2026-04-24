@@ -79,15 +79,18 @@ export function BoothMap({ meetings, date }: BoothMapProps) {
         ))}
       </div>
 
-      {/* Zoomable floor plan */}
-      <div className="bg-[#f6f7f8] relative" style={{ height: 440 }}>
+      {/* Zoomable floor plan — initialScale chosen so the image fits the container width on load.
+          Container is ~card width (mobile ~375px, desktop ~640px); image is 1522×1297.
+          minScale lets users pinch out further if they want the whole hall in one view. */}
+      <div className="bg-[#f6f7f8] relative overflow-hidden" style={{ height: 440 }}>
         <TransformWrapper
-          initialScale={1}
-          minScale={0.7}
-          maxScale={5}
+          initialScale={0.3}
+          minScale={0.22}
+          maxScale={4}
           centerOnInit
-          wheel={{ step: 0.12 }}
-          doubleClick={{ mode: 'zoomIn', step: 0.6 }}
+          wheel={{ step: 0.15 }}
+          doubleClick={{ mode: 'zoomIn', step: 0.5 }}
+          limitToBounds={false}
         >
           {({ zoomIn, zoomOut, resetTransform }) => (
             <>
