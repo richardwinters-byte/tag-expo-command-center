@@ -31,7 +31,10 @@ export function TopBar({
 }) {
   const router = useRouter();
   return (
-    <header className="md:hidden sticky top-0 z-20 bg-tag-50/90 dark:bg-[#0A1415]/90 backdrop-blur-md border-b border-hairline">
+    <header
+      className="md:hidden sticky top-0 z-20 bg-tag-50/90 dark:bg-[#0A1415]/90 backdrop-blur-md border-b border-hairline"
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+    >
       {/* Row 1 — always: TAG logo, title, chat, theme toggle */}
       <div className="flex items-center gap-3 px-4 py-3 min-h-[56px]">
         <Link

@@ -170,8 +170,8 @@ export function NextUpBanner() {
       <button
         onClick={() => setMinimizedId(null)}
         aria-label="Show next up"
-        className="fixed right-4 top-3 md:top-4 z-30 rounded-full text-white shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center gap-1.5 px-3 py-1.5 text-[11px]"
-        style={{ backgroundColor: bg }}
+        className="fixed right-4 z-30 rounded-full text-white shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center gap-1.5 px-3 py-1.5 text-[11px]"
+        style={{ backgroundColor: bg, top: 'calc(env(safe-area-inset-top) + 12px)' }}
       >
         <Circle size={8} className="fill-white" />
         <span className="font-bold tracking-wider opacity-90">NEXT</span>
