@@ -24,6 +24,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.53.1",
+    "react-zoom-pan-pinch": "^4.0.3",
     "tailwind-merge": "^2.5.4",
     "zod": "^3.23.8"
   },
@@ -37,6 +38,7 @@
     "eslint": "^9",
     "eslint-config-next": "^15.1.0",
     "pg": "^8.20.0",
+    "playwright": "^1.59.1",
     "postcss": "^8.4.47",
     "sharp": "^0.34.5",
     "tailwindcss": "^3.4.14",
