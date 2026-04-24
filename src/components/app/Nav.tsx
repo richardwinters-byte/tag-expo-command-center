@@ -43,8 +43,10 @@ export function BottomNav() {
 const desktopLinks = [
   { href: '/today', label: 'Today' },
   { href: '/schedule', label: 'Schedule' },
+  { href: '/map', label: 'Booth Map' },
   { href: '/targets', label: 'Targets' },
   { href: '/leads', label: 'Leads' },
+  { href: '/pipeline', label: 'Pipeline' },
   { href: '/intel', label: 'Intel' },
   { href: '/debrief', label: 'Debrief' },
   { href: '/morning', label: 'Morning Brief' },
