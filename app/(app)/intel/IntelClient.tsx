@@ -228,13 +228,23 @@ function LogIntelDrawer({ onClose, currentUserId, targets }: { onClose: () => vo
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex items-end md:items-center justify-center bg-black/30" onClick={onClose}>
-      <div className="bg-white w-full md:max-w-md md:rounded-card rounded-t-2xl p-5 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-4">
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/30" onClick={onClose}>
+      <div
+        className="bg-white w-full md:max-w-md md:rounded-card rounded-t-2xl flex flex-col"
+        style={{ maxHeight: 'min(90dvh, calc(100dvh - env(safe-area-inset-top, 0px) - 64px))' }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-5 pt-5 pb-3 shrink-0 border-b border-hairline">
           <h2 className="text-lg font-semibold">Log Intel</h2>
-          <button onClick={onClose} className="text-tag-cold"><X size={20} /></button>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="text-tag-cold p-2 -m-2 rounded-btn hover:bg-tag-50"
+          >
+            <X size={20} />
+          </button>
         </div>
-        <div className="space-y-3">
+        <div className="space-y-3 px-5 py-4 overflow-y-auto">
           <div>
             <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">About</label>
             <div className="grid grid-cols-3 gap-2">
