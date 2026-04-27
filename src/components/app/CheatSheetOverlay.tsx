@@ -36,7 +36,10 @@ export function CheatSheetOverlay({
   return (
     <div className="fixed inset-0 z-50 bg-tag-50 dark:bg-[#0A1415] flex flex-col overflow-y-auto">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-tag-50/95 dark:bg-[#0A1415]/95 backdrop-blur-md border-b border-hairline px-4 py-3 flex items-center gap-3 min-h-[56px]">
+      <div
+        className="sticky top-0 z-10 bg-tag-50/95 dark:bg-[#0A1415]/95 backdrop-blur-md border-b border-hairline px-4 py-3 flex items-center gap-3 min-h-[56px]"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 0.75rem)' }}
+      >
         <button
           onClick={onClose}
           aria-label="Close"
@@ -54,7 +57,10 @@ export function CheatSheetOverlay({
       </div>
 
       {/* Content — large type, scan-friendly */}
-      <div className="flex-1 max-w-3xl w-full mx-auto px-5 py-6 space-y-6">
+      <div
+        className="flex-1 max-w-3xl w-full mx-auto px-5 py-6 space-y-6"
+        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 1.5rem)' }}
+      >
         {/* Opener — biggest, most prominent */}
         {target.opener && (
           <section>

@@ -230,7 +230,10 @@ function Viewer({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/95 flex flex-col">
-      <div className="flex items-center justify-between p-3 text-white">
+      <div
+        className="flex items-center justify-between p-3 text-white"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 0.75rem)' }}
+      >
         <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-btn hover:bg-white/10" aria-label="Close">
           <X size={20} />
         </button>
@@ -251,7 +254,10 @@ function Viewer({
           </button>
         </div>
       </div>
-      <div className="flex-1 flex items-center justify-center p-4 relative overflow-hidden">
+      <div
+        className="flex-1 flex items-center justify-center p-4 relative overflow-hidden"
+        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 1rem)' }}
+      >
         {attachment.signed_url && (
           // eslint-disable-next-line @next/next/no-img-element
           <img

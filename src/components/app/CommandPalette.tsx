@@ -179,9 +179,12 @@ export function CommandPalette() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[10vh] px-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-100">
+    <div
+      className="fixed inset-0 z-[60] flex items-start justify-center px-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-100"
+      style={{ paddingTop: 'max(env(safe-area-inset-top, 0px) + 0.75rem, 8dvh)' }}
+    >
       <button onClick={() => setOpen(false)} aria-label="Close" className="absolute inset-0" />
-      <div className="relative w-full max-w-xl bg-white dark:bg-[#14171A] rounded-xl shadow-2xl border border-hairline overflow-hidden flex flex-col max-h-[70vh]">
+      <div className="relative w-full max-w-xl bg-white dark:bg-[#14171A] rounded-xl shadow-2xl border border-hairline overflow-hidden flex flex-col max-h-[min(70dvh,calc(100dvh-6rem))]">
         {/* Input */}
         <div className="flex items-center gap-2 px-4 py-3 border-b border-hairline">
           <Search size={16} className="text-tag-cold shrink-0" />
