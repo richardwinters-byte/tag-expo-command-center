@@ -325,10 +325,13 @@ function QuickAddLead({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/30" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/30"
+      style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 64px)' }}
+      onClick={onClose}
+    >
       <div
-        className="bg-white w-full md:max-w-md md:rounded-card rounded-t-2xl flex flex-col"
-        style={{ maxHeight: 'min(90dvh, calc(100dvh - env(safe-area-inset-top, 0px) - 64px))' }}
+        className="bg-white w-full md:max-w-md md:rounded-card rounded-t-2xl flex flex-col max-h-full md:max-h-[85vh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 pt-5 pb-3 shrink-0 border-b border-hairline">
@@ -341,7 +344,7 @@ function QuickAddLead({
             <X size={20} />
           </button>
         </div>
-        <div className="space-y-3 px-5 py-4 overflow-y-auto">
+        <div className="space-y-3 px-5 py-4 overflow-y-auto flex-1 min-h-0">
           <div>
             <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Name *</label>
             <input autoFocus value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full" />
