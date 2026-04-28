@@ -2,13 +2,11 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { Plus, X, Tag, Building2 } from 'lucide-react';
+import { Plus, Tag, Building2 } from 'lucide-react';
 import { UserAvatar, trackColor } from '@/components/app/Pills';
-import { VoiceButton } from '@/components/app/VoiceInput';
 import { fmt } from '@/lib/utils';
 import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
-import type { Intel, IntelSubject, IntelType, Significance, User } from '@/lib/types';
+import type { Intel, IntelSubject, User } from '@/lib/types';
 
 type TargetSlim = { id: string; company_name: string; tier: string; track: string };
 type IntelWithTarget = Intel & { target?: TargetSlim | null };
@@ -35,8 +33,6 @@ export function IntelClient({
   targets: TargetSlim[];
   currentUserId: string;
 }) {
-  const searchParams = useSearchParams();
-  const [logOpen, setLogOpen] = useState(searchParams.get('log') === '1');
   const [intel, setIntel] = useState(initialIntel);
 
   const [filterKind, setFilterKind] = useState<'all' | 'target' | 'tag' | 'subject'>('all');
@@ -117,9 +113,9 @@ export function IntelClient({
           {filtered.length} item{filtered.length !== 1 ? 's' : ''}
           {filterLabel && <> · <span className="font-medium text-tag-ink">{filterLabel}</span></>}
         </div>
-        <button onClick={() => setLogOpen(true)} className="btn-accent btn-sm">
+        <Link href="/intel/new" className="btn-accent btn-sm">
           <Plus size={14} /> Log intel
-        </button>
+        </Link>
       </div>
 
       {filtered.length === 0 ? (
@@ -176,7 +172,6 @@ export function IntelClient({
         </div>
       )}
 
-      {logOpen && <LogIntelDrawer onClose={() => setLogOpen(false)} currentUserId={currentUserId} targets={targets} />}
     </div>
   );
 }
@@ -192,159 +187,5 @@ function FilterChip({ active, onClick, disabled, children }: { active: boolean; 
     >
       {children}
     </button>
-  );
-}
-
-function LogIntelDrawer({ onClose, currentUserId, targets }: { onClose: () => void; currentUserId: string; targets: TargetSlim[] }) {
-  const [aboutKind, setAboutKind] = useState<'target' | 'tag' | 'subject'>('target');
-  const [targetId, setTargetId] = useState<string>('');
-  const [tag, setTag] = useState<string>('');
-  const [subject, setSubject] = useState<IntelSubject>('cgc');
-  const [type, setType] = useState<IntelType>('booth_observation');
-  const [significance, setSignificance] = useState<Significance>('medium');
-  const [headline, setHeadline] = useState('');
-  const [details, setDetails] = useState('');
-  const [source, setSource] = useState('');
-  const [saving, setSaving] = useState(false);
-
-  async function submit() {
-    if (!headline.trim()) return;
-    setSaving(true);
-    const supabase = createSupabaseBrowserClient();
-    await supabase.from('intel').insert({
-      target_id: aboutKind === 'target' && targetId ? targetId : null,
-      tag: aboutKind === 'tag' && tag.trim() ? tag.trim() : null,
-      subject: aboutKind === 'subject' ? subject : null,
-      type,
-      significance,
-      headline: headline.trim(),
-      details: details.trim() || null,
-      source: source.trim() || null,
-      captured_by_id: currentUserId,
-      date_observed: new Date().toISOString().slice(0, 10),
-    });
-    setSaving(false);
-    onClose();
-  }
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/30"
-      style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 64px)' }}
-      onClick={onClose}
-    >
-      <div
-        className="bg-white w-full md:max-w-md md:rounded-card rounded-t-2xl flex flex-col max-h-full md:max-h-[85vh]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between px-5 pt-5 pb-3 shrink-0 border-b border-hairline">
-          <h2 className="text-lg font-semibold">Log Intel</h2>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="text-tag-cold p-2 -m-2 rounded-btn hover:bg-tag-50"
-          >
-            <X size={20} />
-          </button>
-        </div>
-        <div className="space-y-3 px-5 py-4 overflow-y-auto flex-1 min-h-0">
-          <div>
-            <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">About</label>
-            <div className="grid grid-cols-3 gap-2">
-              {([
-                { k: 'target' as const, l: 'Target' },
-                { k: 'tag' as const, l: 'Tag' },
-                { k: 'subject' as const, l: 'Competitor' },
-              ]).map(({ k, l }) => (
-                <button
-                  key={k}
-                  type="button"
-                  onClick={() => setAboutKind(k)}
-                  className={`py-2 rounded-btn text-xs font-medium ${
-                    aboutKind === k ? 'bg-tag-900 text-white' : 'bg-tag-50 text-tag-cold'
-                  }`}
-                >
-                  {l}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {aboutKind === 'target' && (
-            <div>
-              <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Target company</label>
-              <select value={targetId} onChange={(e) => setTargetId(e.target.value)} className="w-full">
-                <option value="">— Select a target —</option>
-                {targets.map((t) => <option key={t.id} value={t.id}>{t.company_name}</option>)}
-              </select>
-            </div>
-          )}
-          {aboutKind === 'tag' && (
-            <div>
-              <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Tag</label>
-              <input value={tag} onChange={(e) => setTag(e.target.value)} placeholder='e.g. "ubisoft", "industry"' className="w-full" />
-              <div className="text-[10px] text-tag-cold mt-1">Use for off-list companies or general observations.</div>
-            </div>
-          )}
-          {aboutKind === 'subject' && (
-            <div>
-              <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Competitor</label>
-              <select value={subject} onChange={(e) => setSubject(e.target.value as IntelSubject)} className="w-full">
-                {SUBJECTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-              </select>
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Type</label>
-              <select value={type} onChange={(e) => setType(e.target.value as IntelType)} className="w-full">
-                <option value="booth_observation">Booth observation</option>
-                <option value="overheard">Overheard</option>
-                <option value="announced_deal">Announced deal</option>
-                <option value="pricing">Pricing</option>
-                <option value="tech_demo">Tech demo</option>
-                <option value="rumor">Rumor</option>
-                <option value="personnel">Personnel</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Significance</label>
-              <select value={significance} onChange={(e) => setSignificance(e.target.value as Significance)} className="w-full">
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider">Headline</label>
-              <VoiceButton value={headline} onChange={setHeadline} />
-            </div>
-            <input autoFocus value={headline} onChange={(e) => setHeadline(e.target.value)} placeholder="One line — the finding" className="w-full" />
-          </div>
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider">Details</label>
-              <VoiceButton value={details} onChange={setDetails} />
-            </div>
-            <textarea value={details} onChange={(e) => setDetails(e.target.value)} rows={4} className="w-full" />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Source</label>
-            <input value={source} onChange={(e) => setSource(e.target.value)} placeholder="Booth, conversation, overheard…" className="w-full" />
-          </div>
-          <button
-            onClick={submit}
-            disabled={saving || !headline.trim() || (aboutKind === 'target' && !targetId) || (aboutKind === 'tag' && !tag.trim())}
-            className="btn-primary w-full"
-          >
-            {saving ? 'Logging…' : 'Log intel'}
-          </button>
-        </div>
-      </div>
-    </div>
   );
 }

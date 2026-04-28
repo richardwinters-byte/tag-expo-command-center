@@ -1,15 +1,13 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Plus, Download, X, Search, Camera, Loader2, Trash2 } from 'lucide-react';
+import { Plus, Download, X, Search } from 'lucide-react';
 import { TemperaturePill, UserAvatar } from '@/components/app/Pills';
-import { VoiceButton } from '@/components/app/VoiceInput';
 import { downloadCSV, fmt } from '@/lib/utils';
 import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
-import { uploadAttachment } from '@/lib/attachments';
-import type { Lead, User, Temperature } from '@/lib/types';
+import type { Lead, User } from '@/lib/types';
 
 function localDateYYYYMMDD() {
   const now = new Date();
@@ -35,7 +33,6 @@ export function LeadsClient({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [leads, setLeads] = useState(initialLeads);
-  const [quickAdd, setQuickAdd] = useState(searchParams.get('add') === '1');
 
   // Filters from URL
   const owner = searchParams.get('owner') ?? 'all';
@@ -154,9 +151,9 @@ export function LeadsClient({
                 <Download size={12} /> CSV
               </button>
             )}
-            <button onClick={() => setQuickAdd(true)} className="btn-accent btn-sm">
+            <Link href="/leads/new" className="btn-accent btn-sm">
               <Plus size={14} /> Add Lead
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -198,15 +195,6 @@ export function LeadsClient({
         </>
       )}
 
-      {/* Quick add drawer */}
-      {quickAdd && (
-        <QuickAddLead
-          onClose={() => setQuickAdd(false)}
-          currentUserId={currentUserId}
-          users={users}
-          targets={targets}
-        />
-      )}
     </div>
   );
 }
@@ -250,225 +238,5 @@ function LeadMobileCard({ lead, usersById }: { lead: Lead; usersById: Map<string
         {lead.deadline && <span className="text-[11px] font-mono text-tag-cold">due {fmt(lead.deadline, 'MMM d')}</span>}
       </div>
     </Link>
-  );
-}
-
-function QuickAddLead({
-  onClose,
-  currentUserId,
-  users,
-  targets,
-}: {
-  onClose: () => void;
-  currentUserId: string;
-  users: User[];
-  targets: { id: string; company_name: string; tier: string }[];
-}) {
-  const router = useRouter();
-  const [fullName, setFullName] = useState('');
-  const [company, setCompany] = useState('');
-  const [title, setTitle] = useState('');
-  const [email, setEmail] = useState('');
-  const [temperature, setTemperature] = useState<Temperature>('warm');
-  const [expanded, setExpanded] = useState(false);
-  const [nextAction, setNextAction] = useState('');
-  const [deadline, setDeadline] = useState('');
-  const [notes, setNotes] = useState('');
-  const [saving, setSaving] = useState(false);
-  // Queued photo - captured before the lead exists, uploaded after insert
-  const [queuedPhoto, setQueuedPhoto] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    // Keep a preview URL for the queued file
-    if (!queuedPhoto) {
-      setPhotoPreview(null);
-      return;
-    }
-    const url = URL.createObjectURL(queuedPhoto);
-    setPhotoPreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [queuedPhoto]);
-
-  async function save() {
-    if (!fullName.trim() || !company.trim()) return;
-    setSaving(true);
-    const supabase = createSupabaseBrowserClient();
-    const normalizedCompany = company.trim();
-    const matchedTarget = targets.find((t) => t.company_name.trim().toLowerCase() === normalizedCompany.toLowerCase());
-    const { data, error } = await supabase
-      .from('leads')
-      .insert({
-        full_name: fullName.trim(),
-        company: normalizedCompany,
-        title: title.trim() || null,
-        email: email.trim() || null,
-        temperature,
-        owner_id: currentUserId,
-        met_by_id: currentUserId,
-        target_id: matchedTarget?.id ?? null,
-        next_action: nextAction.trim() || null,
-        deadline: deadline || null,
-        notes: notes.trim() || null,
-      })
-      .select()
-      .single();
-    if (error) {
-      setSaving(false);
-      alert('Error: ' + error.message);
-      return;
-    }
-    // Upload queued photo to the new lead, best-effort
-    if (queuedPhoto) {
-      try {
-        await uploadAttachment(queuedPhoto, { kind: 'lead', id: data.id }, { note: 'biz card', userId: currentUserId });
-      } catch (e) {
-        // Lead already created; surface photo error but don't block the redirect
-        console.warn('Photo upload failed, lead saved:', e);
-        alert('Lead saved, but the photo upload failed. Try again from the lead detail page.');
-      }
-    }
-    setSaving(false);
-    onClose();
-    router.push(`/leads/${data.id}`);
-  }
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/30"
-      style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 64px)' }}
-      onClick={onClose}
-    >
-      <div
-        className="bg-white w-full md:max-w-md md:rounded-card rounded-t-2xl flex flex-col max-h-full md:max-h-[85vh]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between px-5 pt-5 pb-3 shrink-0 border-b border-hairline">
-          <h2 className="text-lg font-semibold">Quick Add Lead</h2>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="text-tag-cold p-2 -m-2 rounded-btn hover:bg-tag-50"
-          >
-            <X size={20} />
-          </button>
-        </div>
-        <div className="space-y-3 px-5 py-4 overflow-y-auto flex-1 min-h-0">
-          <div>
-            <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Name *</label>
-            <input autoFocus value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full" />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Company *</label>
-            <input list="target-companies" value={company} onChange={(e) => setCompany(e.target.value)} className="w-full" />
-            <datalist id="target-companies">
-              {targets.map((t) => <option key={t.id} value={t.company_name} />)}
-            </datalist>
-          </div>
-
-          {/* Camera shortcut — capture card before typing */}
-          <div>
-            <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Business card</label>
-            <input
-              ref={cameraInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={(e) => setQueuedPhoto(e.target.files?.[0] ?? null)}
-              className="hidden"
-            />
-            {!queuedPhoto ? (
-              <button
-                type="button"
-                onClick={() => cameraInputRef.current?.click()}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-btn border-2 border-dashed border-hairline text-tag-cold hover:bg-tag-50 hover:border-tag-gold hover:text-tag-900 transition-colors"
-              >
-                <Camera size={16} /> <span className="text-sm font-medium">Snap business card</span>
-              </button>
-            ) : (
-              <div className="flex items-center gap-3 p-2 rounded-btn bg-tag-50 border border-hairline">
-                {photoPreview && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={photoPreview} alt="Preview" className="w-14 h-14 object-cover rounded" />
-                )}
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-medium text-tag-900 truncate">{queuedPhoto.name}</div>
-                  <div className="text-[10px] text-tag-cold">Will upload when lead is saved</div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setQueuedPhoto(null);
-                    if (cameraInputRef.current) cameraInputRef.current.value = '';
-                  }}
-                  className="text-tag-cold hover:text-red-600"
-                  aria-label="Remove photo"
-                >
-                  <Trash2 size={14} />
-                </button>
-              </div>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Temperature</label>
-            <div className="grid grid-cols-3 gap-2">
-              {(['cold', 'warm', 'hot'] as const).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setTemperature(t)}
-                  className={`py-2 rounded-btn text-xs font-medium uppercase ${
-                    temperature === t
-                      ? t === 'hot' ? 'bg-red-700 text-white' : t === 'warm' ? 'bg-tag-gold text-white' : 'bg-gray-500 text-white'
-                      : 'bg-tag-50 text-tag-cold'
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-          </div>
-          {!expanded ? (
-            <button type="button" onClick={() => setExpanded(true)} className="text-xs text-tag-700 underline">
-              + More fields (title, email, next action, deadline, notes)
-            </button>
-          ) : (
-            <>
-              <div>
-                <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Title</label>
-                <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full" />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Email</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full" />
-              </div>
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider">Next action</label>
-                  <VoiceButton value={nextAction} onChange={setNextAction} />
-                </div>
-                <input value={nextAction} onChange={(e) => setNextAction(e.target.value)} className="w-full" />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider mb-1">Deadline</label>
-                <input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} className="w-full" />
-              </div>
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-medium text-tag-700 uppercase tracking-wider">Notes</label>
-                  <VoiceButton value={notes} onChange={setNotes} />
-                </div>
-                <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className="w-full" />
-              </div>
-            </>
-          )}
-          <button onClick={save} disabled={saving || !fullName.trim() || !company.trim()} className="btn-primary w-full">
-            {saving ? (queuedPhoto ? 'Saving + uploading photo…' : 'Saving…') : 'Add Lead'}
-          </button>
-        </div>
-      </div>
-    </div>
   );
 }
