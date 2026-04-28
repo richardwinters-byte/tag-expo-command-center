@@ -3,15 +3,16 @@
  *
  * Layers (back to front):
  *  1. Slow whole-viewport breathing wash.
- *  2. Ten color orbs — TAG teal/gold core PLUS Vegas neons (pink,
- *     purple, cyan). Drift, breathe, glow-pulse on tight cycles.
+ *  2. Ten GIANT blurred PLAYING-CARD SUIT shapes (replacing orbs) drifting,
+ *     pulsing, and breathing. Each gets the TAG/Vegas color palette via
+ *     text-shadow halos.
  *  3. Aurora gradient panning across the middle band.
- *  4. Vertical SEARCHLIGHT beam sweeping across.
- *  5. Three diagonal COMET streaks at staggered angles + delays.
- *  6. Twenty rising EMBER particles (gold/teal/neon mix).
+ *  4. Two SEARCHLIGHT beams sweeping in opposite directions.
+ *  5. Six COMET streaks at varied angles and timings.
+ *  6. Twenty rising EMBER particles.
  *  7. Twelve TWINKLE stars popping in and out.
- *  8. Floating PLAYING-CARD SUIT symbols (♠♥♦♣) drifting upward.
- *  9. MARQUEE bulb chase along the top edge.
+ *  8. Six small floating PLAYING-CARD SUITS rising upward with rotation.
+ *  9. MARQUEE bulb chase along top + bottom edges.
  *
  * Fixed to viewport, behind content (z-0), pointer-events:none.
  * All motion respects prefers-reduced-motion.
@@ -24,21 +25,21 @@ export function AmbientBackground() {
     >
       <style>{`
         @keyframes ambient-pulse-bg { 0%,100% { opacity: 0.7; } 50% { opacity: 1; } }
-        @keyframes ambient-drift-1 { 0%,100% { transform: translate(-15%, -12%) scale(1); } 50% { transform: translate(28%, 22%) scale(1.3); } }
-        @keyframes ambient-drift-2 { 0%,100% { transform: translate(20%, 32%) scale(1.2); } 50% { transform: translate(-28%, -10%) scale(0.9); } }
+        @keyframes ambient-drift-1 { 0%,100% { transform: translate(-15%, -12%) scale(1) rotate(0deg); } 50% { transform: translate(28%, 22%) scale(1.3) rotate(15deg); } }
+        @keyframes ambient-drift-2 { 0%,100% { transform: translate(20%, 32%) scale(1.2) rotate(-10deg); } 50% { transform: translate(-28%, -10%) scale(0.9) rotate(8deg); } }
         @keyframes ambient-drift-3 {
-          0%   { transform: translate(-50%, -50%) scale(0.85); }
-          33%  { transform: translate(-78%, -22%) scale(1.15); }
-          66%  { transform: translate(-22%, -78%) scale(1.25); }
-          100% { transform: translate(-50%, -50%) scale(0.85); }
+          0%   { transform: translate(-50%, -50%) scale(0.85) rotate(0deg); }
+          33%  { transform: translate(-78%, -22%) scale(1.15) rotate(20deg); }
+          66%  { transform: translate(-22%, -78%) scale(1.25) rotate(-15deg); }
+          100% { transform: translate(-50%, -50%) scale(0.85) rotate(0deg); }
         }
-        @keyframes ambient-drift-4 { 0%,100% { transform: translate(60%, -30%) scale(0.85); } 50% { transform: translate(-25%, 55%) scale(1.15); } }
-        @keyframes ambient-drift-5 { 0%,100% { transform: translate(-45%, 60%) scale(1); } 50% { transform: translate(45%, -25%) scale(1.25); } }
-        @keyframes ambient-drift-6 { 0%,100% { transform: translate(70%, 70%) scale(0.9); } 50% { transform: translate(-30%, -30%) scale(1.1); } }
-        @keyframes ambient-drift-7 { 0%,100% { transform: translate(-60%, -10%) scale(0.95); } 50% { transform: translate(60%, 20%) scale(1.2); } }
-        @keyframes ambient-drift-pink { 0%,100% { transform: translate(40%, -40%) scale(0.95); } 50% { transform: translate(-50%, 40%) scale(1.2); } }
-        @keyframes ambient-drift-purple { 0%,100% { transform: translate(-30%, 20%) scale(1); } 50% { transform: translate(30%, -40%) scale(1.25); } }
-        @keyframes ambient-drift-cyan { 0%,100% { transform: translate(20%, 60%) scale(0.85); } 50% { transform: translate(-40%, -30%) scale(1.15); } }
+        @keyframes ambient-drift-4 { 0%,100% { transform: translate(60%, -30%) scale(0.85) rotate(0deg); } 50% { transform: translate(-25%, 55%) scale(1.15) rotate(25deg); } }
+        @keyframes ambient-drift-5 { 0%,100% { transform: translate(-45%, 60%) scale(1) rotate(0deg); } 50% { transform: translate(45%, -25%) scale(1.25) rotate(-20deg); } }
+        @keyframes ambient-drift-6 { 0%,100% { transform: translate(70%, 70%) scale(0.9) rotate(0deg); } 50% { transform: translate(-30%, -30%) scale(1.1) rotate(18deg); } }
+        @keyframes ambient-drift-7 { 0%,100% { transform: translate(-60%, -10%) scale(0.95) rotate(-5deg); } 50% { transform: translate(60%, 20%) scale(1.2) rotate(12deg); } }
+        @keyframes ambient-drift-pink { 0%,100% { transform: translate(40%, -40%) scale(0.95) rotate(0deg); } 50% { transform: translate(-50%, 40%) scale(1.2) rotate(30deg); } }
+        @keyframes ambient-drift-purple { 0%,100% { transform: translate(-30%, 20%) scale(1) rotate(-15deg); } 50% { transform: translate(30%, -40%) scale(1.25) rotate(20deg); } }
+        @keyframes ambient-drift-cyan { 0%,100% { transform: translate(20%, 60%) scale(0.85) rotate(0deg); } 50% { transform: translate(-40%, -30%) scale(1.15) rotate(-25deg); } }
         @keyframes ambient-aurora-pan {
           0%   { transform: translateX(-45%); opacity: 0.0; }
           25%  { opacity: 0.95; }
@@ -49,7 +50,6 @@ export function AmbientBackground() {
         @keyframes ambient-searchlight {
           0%   { transform: translateX(-30vw) rotate(8deg); opacity: 0; }
           12%  { opacity: 0.6; }
-          50%  { opacity: 0.6; }
           88%  { opacity: 0.6; }
           100% { transform: translateX(130vw) rotate(8deg); opacity: 0; }
         }
@@ -60,22 +60,40 @@ export function AmbientBackground() {
           100% { transform: translateX(-30vw) rotate(-12deg); opacity: 0; }
         }
         @keyframes ambient-comet-a {
-          0%   { transform: translate(-20vw, -20vh) rotate(35deg) scaleX(0.5); opacity: 0; }
+          0%   { transform: translate(-25vw, -25vh) rotate(35deg) scaleX(0.5); opacity: 0; }
           5%   { opacity: 0.95; }
-          18%  { transform: translate(120vw, 80vh) rotate(35deg) scaleX(1); opacity: 0; }
-          100% { transform: translate(120vw, 80vh) rotate(35deg) scaleX(1); opacity: 0; }
+          18%  { transform: translate(125vw, 80vh) rotate(35deg) scaleX(1); opacity: 0; }
+          100% { transform: translate(125vw, 80vh) rotate(35deg) scaleX(1); opacity: 0; }
         }
         @keyframes ambient-comet-b {
-          0%   { transform: translate(120vw, 10vh) rotate(155deg) scaleX(0.5); opacity: 0; }
+          0%   { transform: translate(125vw, 10vh) rotate(155deg) scaleX(0.5); opacity: 0; }
           5%   { opacity: 0.95; }
           18%  { transform: translate(-30vw, 80vh) rotate(155deg) scaleX(1); opacity: 0; }
           100% { transform: translate(-30vw, 80vh) rotate(155deg) scaleX(1); opacity: 0; }
         }
         @keyframes ambient-comet-c {
-          0%   { transform: translate(-20vw, 100vh) rotate(-25deg) scaleX(0.5); opacity: 0; }
+          0%   { transform: translate(-25vw, 100vh) rotate(-25deg) scaleX(0.5); opacity: 0; }
           5%   { opacity: 0.9; }
-          20%  { transform: translate(120vw, -10vh) rotate(-25deg) scaleX(1); opacity: 0; }
-          100% { transform: translate(120vw, -10vh) rotate(-25deg) scaleX(1); opacity: 0; }
+          20%  { transform: translate(125vw, -10vh) rotate(-25deg) scaleX(1); opacity: 0; }
+          100% { transform: translate(125vw, -10vh) rotate(-25deg) scaleX(1); opacity: 0; }
+        }
+        @keyframes ambient-comet-d {
+          0%   { transform: translate(50vw, -25vh) rotate(95deg) scaleX(0.5); opacity: 0; }
+          5%   { opacity: 0.95; }
+          20%  { transform: translate(50vw, 110vh) rotate(95deg) scaleX(1); opacity: 0; }
+          100% { transform: translate(50vw, 110vh) rotate(95deg) scaleX(1); opacity: 0; }
+        }
+        @keyframes ambient-comet-e {
+          0%   { transform: translate(-25vw, 50vh) rotate(0deg) scaleX(0.5); opacity: 0; }
+          5%   { opacity: 0.95; }
+          20%  { transform: translate(125vw, 50vh) rotate(0deg) scaleX(1); opacity: 0; }
+          100% { transform: translate(125vw, 50vh) rotate(0deg) scaleX(1); opacity: 0; }
+        }
+        @keyframes ambient-comet-f {
+          0%   { transform: translate(125vw, 90vh) rotate(-145deg) scaleX(0.5); opacity: 0; }
+          5%   { opacity: 0.95; }
+          20%  { transform: translate(-30vw, -10vh) rotate(-145deg) scaleX(1); opacity: 0; }
+          100% { transform: translate(-30vw, -10vh) rotate(-145deg) scaleX(1); opacity: 0; }
         }
         @keyframes ambient-ember-rise {
           0%   { transform: translate3d(var(--ax), 105vh, 0) scale(0.5); opacity: 0; }
@@ -102,7 +120,7 @@ export function AmbientBackground() {
         @keyframes marquee-glow { 0%,100% { opacity: 0.85; } 50% { opacity: 1; } }
         @media (prefers-reduced-motion: reduce) {
           .ambient-bg-pulse,
-          .ambient-orb,
+          .ambient-suit-orb,
           .ambient-aurora,
           .ambient-searchlight,
           .ambient-comet,
@@ -110,6 +128,11 @@ export function AmbientBackground() {
           .ambient-twinkle,
           .ambient-suit,
           .ambient-marquee { animation: none !important; }
+        }
+        .ambient-suit-orb {
+          font-weight: 900;
+          line-height: 1;
+          will-change: transform, opacity;
         }
       `}</style>
 
@@ -122,92 +145,29 @@ export function AmbientBackground() {
         }}
       />
 
-      {/* TAG-brand orbs */}
-      <div
-        className="ambient-orb absolute top-0 left-0 w-[55rem] h-[55rem] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(20, 89, 91, 0.95) 0%, rgba(20, 89, 91, 0.3) 35%, transparent 65%)',
-          filter: 'blur(80px)',
-          animation: 'ambient-drift-1 14s ease-in-out infinite, ambient-glow-pulse 5s ease-in-out infinite',
-        }}
-      />
-      <div
-        className="ambient-orb absolute bottom-0 right-0 w-[48rem] h-[48rem] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(192, 138, 48, 0.78) 0%, rgba(192, 138, 48, 0.22) 40%, transparent 65%)',
-          filter: 'blur(90px)',
-          animation: 'ambient-drift-2 18s ease-in-out infinite, ambient-glow-pulse 7s ease-in-out infinite',
-        }}
-      />
-      <div
-        className="ambient-orb absolute left-1/2 top-1/2 w-[36rem] h-[36rem] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(15, 123, 74, 0.7) 0%, rgba(15, 123, 74, 0.22) 45%, transparent 70%)',
-          filter: 'blur(85px)',
-          animation: 'ambient-drift-3 22s ease-in-out infinite',
-        }}
-      />
-      <div
-        className="ambient-orb absolute top-0 right-0 w-[28rem] h-[28rem] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(232, 185, 91, 0.7) 0%, transparent 60%)',
-          filter: 'blur(70px)',
-          animation: 'ambient-drift-4 12s ease-in-out infinite, ambient-glow-pulse 4s ease-in-out infinite',
-        }}
-      />
-      <div
-        className="ambient-orb absolute bottom-0 left-0 w-[34rem] h-[34rem] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(11, 47, 49, 0.7) 0%, rgba(11, 47, 49, 0.18) 45%, transparent 70%)',
-          filter: 'blur(75px)',
-          animation: 'ambient-drift-5 16s ease-in-out infinite',
-        }}
-      />
-      <div
-        className="ambient-orb absolute right-0 bottom-1/3 w-[22rem] h-[22rem] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(232, 185, 91, 0.6) 0%, transparent 55%)',
-          filter: 'blur(60px)',
-          animation: 'ambient-drift-6 10s ease-in-out infinite, ambient-glow-pulse 3.5s ease-in-out infinite',
-        }}
-      />
-      <div
-        className="ambient-orb absolute left-0 top-1/3 w-[24rem] h-[24rem] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(20, 89, 91, 0.65) 0%, transparent 55%)',
-          filter: 'blur(65px)',
-          animation: 'ambient-drift-7 13s ease-in-out infinite',
-        }}
-      />
-
-      {/* Vegas neon orbs */}
-      <div
-        className="ambient-orb absolute top-1/4 right-1/4 w-[28rem] h-[28rem] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(236, 72, 153, 0.78) 0%, rgba(236, 72, 153, 0.22) 45%, transparent 70%)',
-          filter: 'blur(70px)',
-          animation: 'ambient-drift-pink 15s ease-in-out infinite, ambient-glow-pulse 4.5s ease-in-out infinite',
-          mixBlendMode: 'screen',
-        }}
-      />
-      <div
-        className="ambient-orb absolute bottom-1/4 left-1/3 w-[30rem] h-[30rem] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(168, 85, 247, 0.72) 0%, rgba(168, 85, 247, 0.22) 45%, transparent 70%)',
-          filter: 'blur(75px)',
-          animation: 'ambient-drift-purple 17s ease-in-out infinite, ambient-glow-pulse 6s ease-in-out infinite',
-          mixBlendMode: 'screen',
-        }}
-      />
-      <div
-        className="ambient-orb absolute top-1/3 left-1/2 w-[24rem] h-[24rem] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(34, 211, 238, 0.7) 0%, rgba(34, 211, 238, 0.18) 45%, transparent 70%)',
-          filter: 'blur(60px)',
-          animation: 'ambient-drift-cyan 11s ease-in-out infinite, ambient-glow-pulse 3.5s ease-in-out infinite',
-          mixBlendMode: 'screen',
-        }}
-      />
+      {/* GIANT SUIT ORBS — replacing the round blobs */}
+      {SUIT_ORBS.map((s, i) => (
+        <span
+          key={`so${i}`}
+          className={`ambient-suit-orb absolute select-none ${s.blend ? 'mix-blend-screen' : ''}`}
+          style={{
+            left: s.left,
+            top: s.top,
+            right: s.right,
+            bottom: s.bottom,
+            fontSize: s.size,
+            color: s.color,
+            textShadow: `0 0 ${s.glow}px ${s.color}, 0 0 ${s.glow * 2}px ${s.color}, 0 0 ${s.glow * 3}px ${s.color}`,
+            filter: `blur(${s.blur}px)`,
+            animation: s.pulse
+              ? `${s.anim} ${s.duration}s ease-in-out infinite, ambient-glow-pulse ${s.pulse}s ease-in-out infinite`
+              : `${s.anim} ${s.duration}s ease-in-out infinite`,
+            transformOrigin: 'center',
+          }}
+        >
+          {s.glyph}
+        </span>
+      ))}
 
       {/* Aurora */}
       <div
@@ -220,7 +180,7 @@ export function AmbientBackground() {
         }}
       />
 
-      {/* Marquee bulb chase along the very top */}
+      {/* Marquee bulb chase — top */}
       <div
         className="ambient-marquee absolute top-0 left-0 right-0 h-[3px]"
         style={{
@@ -230,7 +190,7 @@ export function AmbientBackground() {
           animation: 'marquee-chase 0.9s linear infinite, marquee-glow 1.6s ease-in-out infinite',
         }}
       />
-      {/* Marquee bulb chase along the bottom (above safe-area) */}
+      {/* Marquee bulb chase — bottom */}
       <div
         className="ambient-marquee absolute bottom-0 left-0 right-0 h-[3px]"
         style={{
@@ -241,7 +201,7 @@ export function AmbientBackground() {
         }}
       />
 
-      {/* Searchlights — two beams crossing from opposite sides */}
+      {/* Searchlights — two beams */}
       <div
         className="ambient-searchlight absolute top-0 bottom-0 w-[7vw] -ml-[3.5vw]"
         style={{
@@ -262,37 +222,21 @@ export function AmbientBackground() {
         }}
       />
 
-      {/* Comets — three streaks at varied angles + delays */}
-      <div
-        className="ambient-comet absolute top-0 left-0 w-[60vw] h-[3px]"
-        style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(232, 185, 91, 0) 5%, rgba(232, 185, 91, 0.95) 80%, rgba(255, 255, 255, 1) 100%)',
-          boxShadow: '0 0 30px rgba(232, 185, 91, 0.9), 0 0 60px rgba(232, 185, 91, 0.5)',
-          transformOrigin: '100% 50%',
-          animation: 'ambient-comet-a 11s linear infinite',
-          animationDelay: '2s',
-        }}
-      />
-      <div
-        className="ambient-comet absolute top-0 left-0 w-[55vw] h-[3px]"
-        style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(236, 72, 153, 0) 5%, rgba(236, 72, 153, 0.95) 80%, rgba(255, 255, 255, 1) 100%)',
-          boxShadow: '0 0 30px rgba(236, 72, 153, 0.9), 0 0 60px rgba(236, 72, 153, 0.5)',
-          transformOrigin: '100% 50%',
-          animation: 'ambient-comet-b 14s linear infinite',
-          animationDelay: '6s',
-        }}
-      />
-      <div
-        className="ambient-comet absolute top-0 left-0 w-[58vw] h-[3px]"
-        style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0) 5%, rgba(34, 211, 238, 0.95) 80%, rgba(255, 255, 255, 1) 100%)',
-          boxShadow: '0 0 30px rgba(34, 211, 238, 0.9), 0 0 60px rgba(34, 211, 238, 0.5)',
-          transformOrigin: '100% 50%',
-          animation: 'ambient-comet-c 13s linear infinite',
-          animationDelay: '9s',
-        }}
-      />
+      {/* Comets — six streaks at varied angles */}
+      {COMETS.map((c, i) => (
+        <div
+          key={`c${i}`}
+          className="ambient-comet absolute top-0 left-0 h-[3px]"
+          style={{
+            width: c.length,
+            background: `linear-gradient(90deg, transparent 0%, ${c.color.replace('1)', '0)')} 5%, ${c.color} 80%, rgba(255, 255, 255, 1) 100%)`,
+            boxShadow: `0 0 30px ${c.color}, 0 0 60px ${c.color.replace('1)', '0.5)')}`,
+            transformOrigin: '100% 50%',
+            animation: `${c.anim} ${c.duration}s linear infinite`,
+            animationDelay: `${c.delay}s`,
+          }}
+        />
+      ))}
 
       {/* Embers */}
       {EMBERS.map((e, i) => (
@@ -332,7 +276,7 @@ export function AmbientBackground() {
         />
       ))}
 
-      {/* Floating playing-card suit symbols */}
+      {/* Floating small suit symbols */}
       {SUITS.map((s, i) => (
         <span
           key={`s${i}`}
@@ -356,6 +300,37 @@ export function AmbientBackground() {
     </div>
   );
 }
+
+// 10 large RECOGNIZABLE suit shapes drifting around (replacing the orb blobs).
+// Light blur keeps edges soft; heavy text-shadow halo gives the neon glow.
+// `anim` is the keyframe name (matched with @keyframes above).
+const SUIT_ORBS: {
+  glyph: string; color: string; size: string; blur: number; glow: number;
+  left?: string; top?: string; right?: string; bottom?: string;
+  anim: string; duration: number; pulse?: number; blend?: boolean;
+}[] = [
+  // TAG-brand suits
+  { glyph: '♠', color: 'rgba(20, 89, 91, 0.7)',   size: '15rem', blur: 1, glow: 28, left: '-2rem', top: '-1rem',                    anim: 'ambient-drift-1',      duration: 14, pulse: 5 },
+  { glyph: '♦', color: 'rgba(192, 138, 48, 0.78)', size: '13rem', blur: 1, glow: 30,                  right: '-1rem', bottom: '0rem', anim: 'ambient-drift-2',      duration: 18, pulse: 7 },
+  { glyph: '♣', color: 'rgba(15, 123, 74, 0.65)',  size: '11rem', blur: 1, glow: 24, left: '50%', top: '50%',                       anim: 'ambient-drift-3',      duration: 22 },
+  { glyph: '♥', color: 'rgba(232, 185, 91, 0.75)', size: '9rem',  blur: 0, glow: 22,                 right: '0rem', top: '0rem',    anim: 'ambient-drift-4',      duration: 12, pulse: 4 },
+  { glyph: '♠', color: 'rgba(11, 47, 49, 0.75)',   size: '10rem', blur: 1, glow: 22, left: '0rem', bottom: '0rem',                  anim: 'ambient-drift-5',      duration: 16 },
+  { glyph: '♦', color: 'rgba(232, 185, 91, 0.75)', size: '7rem',  blur: 0, glow: 18,                 right: '-1rem', bottom: '33%', anim: 'ambient-drift-6',      duration: 10, pulse: 3.5 },
+  { glyph: '♥', color: 'rgba(20, 89, 91, 0.7)',    size: '8rem',  blur: 0, glow: 18, left: '-1rem', top: '33%',                     anim: 'ambient-drift-7',      duration: 13 },
+  // Vegas neon suits
+  { glyph: '♥', color: 'rgba(236, 72, 153, 0.85)', size: '9rem',  blur: 0, glow: 24, left: '50%', top: '20%',                       anim: 'ambient-drift-pink',   duration: 15, pulse: 4.5, blend: true },
+  { glyph: '♣', color: 'rgba(168, 85, 247, 0.85)', size: '10rem', blur: 0, glow: 28, left: '25%', bottom: '20%',                    anim: 'ambient-drift-purple', duration: 17, pulse: 6,   blend: true },
+  { glyph: '♦', color: 'rgba(34, 211, 238, 0.85)', size: '8rem',  blur: 0, glow: 22, left: '50%', top: '30%',                       anim: 'ambient-drift-cyan',   duration: 11, pulse: 3.5, blend: true },
+];
+
+const COMETS: { length: string; color: string; anim: string; duration: number; delay: number }[] = [
+  { length: '60vw', color: 'rgba(232, 185, 91, 1)', anim: 'ambient-comet-a', duration: 9,  delay: 0 },
+  { length: '55vw', color: 'rgba(236, 72, 153, 1)', anim: 'ambient-comet-b', duration: 11, delay: 2 },
+  { length: '58vw', color: 'rgba(34, 211, 238, 1)', anim: 'ambient-comet-c', duration: 10, delay: 4 },
+  { length: '52vw', color: 'rgba(168, 85, 247, 1)', anim: 'ambient-comet-d', duration: 12, delay: 6 },
+  { length: '70vw', color: 'rgba(255, 255, 255, 1)', anim: 'ambient-comet-e', duration: 8,  delay: 8 },
+  { length: '54vw', color: 'rgba(232, 185, 91, 1)', anim: 'ambient-comet-f', duration: 11, delay: 1 },
+];
 
 const EMBERS: { size: string; color: string; glow: number; startX: string; driftX: string; duration: number; delay: number }[] = [
   { size: '6px', color: 'rgba(232, 185, 91, 1)',   glow: 14, startX: '6vw',  driftX: '10vw',  duration: 10, delay: 0 },
@@ -396,10 +371,12 @@ const TWINKLES: { x: string; y: string; size: string; color: string; glow: numbe
 ];
 
 const SUITS: { glyph: string; color: string; size: string; startX: string; driftX: string; duration: number; delay: number; rotateEnd: string }[] = [
-  { glyph: '♠', color: 'rgba(232, 185, 91, 0.7)', size: '32px', startX: '15vw', driftX: '8vw',  duration: 22, delay: 0,  rotateEnd: '360deg' },
-  { glyph: '♥', color: 'rgba(236, 72, 153, 0.75)', size: '28px', startX: '38vw', driftX: '-6vw', duration: 24, delay: 5,  rotateEnd: '-360deg' },
-  { glyph: '♦', color: 'rgba(34, 211, 238, 0.7)',  size: '30px', startX: '60vw', driftX: '10vw', duration: 26, delay: 10, rotateEnd: '720deg' },
-  { glyph: '♣', color: 'rgba(168, 85, 247, 0.7)',  size: '32px', startX: '82vw', driftX: '-9vw', duration: 28, delay: 15, rotateEnd: '-540deg' },
-  { glyph: '♥', color: 'rgba(232, 185, 91, 0.65)', size: '24px', startX: '28vw', driftX: '5vw',  duration: 20, delay: 18, rotateEnd: '360deg' },
-  { glyph: '♠', color: 'rgba(255, 255, 255, 0.6)', size: '26px', startX: '70vw', driftX: '-8vw', duration: 23, delay: 22, rotateEnd: '-360deg' },
+  { glyph: '♠', color: 'rgba(232, 185, 91, 0.85)', size: '36px', startX: '15vw', driftX: '8vw',  duration: 18, delay: 0,  rotateEnd: '360deg' },
+  { glyph: '♥', color: 'rgba(236, 72, 153, 0.9)',  size: '32px', startX: '38vw', driftX: '-6vw', duration: 20, delay: 4,  rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(34, 211, 238, 0.85)', size: '34px', startX: '60vw', driftX: '10vw', duration: 22, delay: 8,  rotateEnd: '720deg' },
+  { glyph: '♣', color: 'rgba(168, 85, 247, 0.85)', size: '36px', startX: '82vw', driftX: '-9vw', duration: 24, delay: 12, rotateEnd: '-540deg' },
+  { glyph: '♥', color: 'rgba(232, 185, 91, 0.8)',  size: '28px', startX: '28vw', driftX: '5vw',  duration: 16, delay: 14, rotateEnd: '360deg' },
+  { glyph: '♠', color: 'rgba(255, 255, 255, 0.7)', size: '30px', startX: '70vw', driftX: '-8vw', duration: 19, delay: 18, rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(236, 72, 153, 0.85)', size: '34px', startX: '5vw',  driftX: '14vw', duration: 21, delay: 22, rotateEnd: '540deg' },
+  { glyph: '♣', color: 'rgba(34, 211, 238, 0.85)', size: '32px', startX: '93vw', driftX: '-12vw', duration: 23, delay: 26, rotateEnd: '-720deg' },
 ];
