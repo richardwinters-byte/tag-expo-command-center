@@ -13,10 +13,8 @@ import { Plus, X, UserPlus, Zap, Calendar } from 'lucide-react';
  */
 export function HotCaptureFab({ pathname }: { pathname: string }) {
   const [open, setOpen] = useState(false);
-
-  // Hide on creation screens + login + today (where the dedicated actions already exist prominently)
   const hideOn = ['/login', '/schedule/new', '/leads/new', '/intel/new'];
-  if (hideOn.some((p) => pathname.startsWith(p))) return null;
+  const hidden = hideOn.some((p) => pathname.startsWith(p));
 
   useEffect(() => {
     if (!open) return;
@@ -31,6 +29,8 @@ export function HotCaptureFab({ pathname }: { pathname: string }) {
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  if (hidden) return null;
 
   return (
     <>
