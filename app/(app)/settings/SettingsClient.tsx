@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LogOut, Mail, Send } from 'lucide-react';
+import { LogOut, Send } from 'lucide-react';
 import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
 import { UserAvatar } from '@/components/app/Pills';
 import type { User } from '@/lib/types';
+import { getErrorMessage } from '@/lib/utils';
 
 type Allowlist = { email: string; name: string; role: string; color: string };
 
@@ -27,15 +28,24 @@ export function SettingsClient({
 
   async function saveProfile() {
     setSavingProfile(true);
-    const supabase = createSupabaseBrowserClient();
-    await supabase.from('users').update({ name, color, phone, signature }).eq('id', me.id);
-    setSavingProfile(false);
-    router.refresh();
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error } = await supabase.from('users').update({ name, color, phone, signature }).eq('id', me.id);
+      if (error) {
+        alert(getErrorMessage(error, 'Failed to save profile.'));
+        return;
+      }
+      router.refresh();
+    } finally {
+      setSavingProfile(false);
+    }
   }
 
   async function signOut() {
     const supabase = createSupabaseBrowserClient();
     await supabase.auth.signOut();
+    const reg = await navigator.serviceWorker?.ready;
+    reg?.active?.postMessage({ type: 'CLEAR_AUTH_CACHE' });
     window.location.href = '/login';
   }
 
@@ -128,22 +138,29 @@ function AllowlistAdmin({ allowlist, users }: { allowlist: Allowlist[]; users: U
       options: { emailRedirectTo: redirectTo, shouldCreateUser: true },
     });
     setInviting(null);
-    alert(error ? `Error: ${error.message}` : `Magic link sent to ${email}`);
+    alert(error ? getErrorMessage(error, 'Failed to send magic link.') : `Magic link sent to ${email}`);
   }
 
   async function addAllowlistEntry() {
     if (!newEmail.trim() || !newName.trim()) return;
     setAdding(true);
-    const supabase = createSupabaseBrowserClient();
-    await supabase.from('allowlist').insert({
-      email: newEmail.trim().toLowerCase(),
-      name: newName.trim(),
-      role: 'member',
-    });
-    setAdding(false);
-    setNewEmail('');
-    setNewName('');
-    router.refresh();
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error } = await supabase.from('allowlist').insert({
+        email: newEmail.trim().toLowerCase(),
+        name: newName.trim(),
+        role: 'member',
+      });
+      if (error) {
+        alert(getErrorMessage(error, 'Failed to add allowlist entry.'));
+        return;
+      }
+      setNewEmail('');
+      setNewName('');
+      router.refresh();
+    } finally {
+      setAdding(false);
+    }
   }
 
   const signedIn = new Set(users.map((u) => u.email.toLowerCase()));

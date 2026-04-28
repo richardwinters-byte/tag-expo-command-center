@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
 import { AnimatedBackground } from '@/components/app/AnimatedBackground';
+import { PwaStatus } from '@/components/app/PwaStatus';
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -32,16 +33,17 @@ function LoginForm() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-tag-900 relative overflow-hidden">
       <AnimatedBackground />
+      <PwaStatus />
       <div className="w-full max-w-sm relative z-10">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-black mb-6">
+        <div className="text-center mb-10 motion-login-stage-1">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-black mb-6 motion-logo-glow">
             <span className="text-white font-bold text-xl tracking-tight">TAG</span>
           </div>
           <h1 className="text-white text-2xl font-semibold tracking-tight">Expo Command Center</h1>
           <p className="text-tag-100 text-sm mt-2">Licensing Expo 2026 · May 19–21</p>
         </div>
 
-        <div className="card card-p bg-white">
+        <div className="card card-p bg-white motion-login-stage-2 motion-card-sheen">
           {sent ? (
             <div className="text-center py-4">
               <div className="text-tag-success font-medium mb-2">✓ Check your email</div>
@@ -78,7 +80,7 @@ function LoginForm() {
                   {error || errorMsg}
                 </div>
               )}
-              <button type="submit" disabled={loading} className="btn-primary w-full">
+              <button type="submit" disabled={loading} className="btn-primary w-full active:scale-[0.99] transition-transform">
                 {loading ? 'Sending…' : 'Send magic link'}
               </button>
               <p className="text-[11px] text-tag-cold text-center pt-2">

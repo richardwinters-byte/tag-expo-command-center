@@ -145,3 +145,12 @@ export function initialsOf(name: string): string {
   const parts = name.trim().split(/\s+/);
   return (parts[0]?.[0] ?? '').concat(parts[1]?.[0] ?? '').toUpperCase();
 }
+
+export function getErrorMessage(error: unknown, fallback = 'Something went wrong.'): string {
+  if (typeof error === 'string' && error.trim()) return error;
+  if (error && typeof error === 'object' && 'message' in error) {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === 'string' && message.trim()) return message;
+  }
+  return fallback;
+}

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Trash2 } from 'lucide-react';
 import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
 import type { Lead, User, FollowUp, Temperature, FollowUpStage, Channel } from '@/lib/types';
-import { fmt } from '@/lib/utils';
+import { fmt, getErrorMessage } from '@/lib/utils';
 import { AttachmentsSection } from '@/components/app/AttachmentsSection';
 import { VoiceButton } from '@/components/app/VoiceInput';
 
@@ -43,45 +43,72 @@ export function LeadDetailClient({
 
   async function save() {
     setSaving(true);
-    const supabase = createSupabaseBrowserClient();
-    await supabase
-      .from('leads')
-      .update({
-        ...form,
-        title: form.title || null,
-        email: form.email || null,
-        phone: form.phone || null,
-        linkedin_url: form.linkedin_url || null,
-        next_action: form.next_action || null,
-        deadline: form.deadline || null,
-        notes: form.notes || null,
-      })
-      .eq('id', lead.id);
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-    router.refresh();
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error } = await supabase
+        .from('leads')
+        .update({
+          ...form,
+          title: form.title || null,
+          email: form.email || null,
+          phone: form.phone || null,
+          linkedin_url: form.linkedin_url || null,
+          next_action: form.next_action || null,
+          deadline: form.deadline || null,
+          notes: form.notes || null,
+        })
+        .eq('id', lead.id);
+      if (error) {
+        alert(getErrorMessage(error, 'Failed to save lead.'));
+        return;
+      }
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      router.refresh();
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function del() {
     if (!confirm(`Delete lead ${lead.full_name}?`)) return;
     const supabase = createSupabaseBrowserClient();
-    await supabase.from('leads').delete().eq('id', lead.id);
+    const { error } = await supabase.from('leads').delete().eq('id', lead.id);
+    if (error) {
+      alert(getErrorMessage(error, 'Failed to delete lead.'));
+      return;
+    }
     router.push('/leads');
   }
 
   async function generateFollowUp(touch: 't1' | 't2' | 't3') {
-    const draft = generateDraft(touch, lead, currentUser);
+    const draft = generateDraft(
+      touch,
+      {
+        full_name: form.full_name || lead.full_name,
+        next_action: form.next_action || null,
+        notes: form.notes || null,
+      },
+      currentUser
+    );
     const supabase = createSupabaseBrowserClient();
     const existing = followUps.find((f) => f.touch === touch);
     if (existing) {
-      await supabase.from('follow_ups').update({ draft, channel: form.preferred_followup_channel }).eq('id', existing.id);
+      const { error } = await supabase.from('follow_ups').update({ draft, channel: form.preferred_followup_channel }).eq('id', existing.id);
+      if (error) {
+        alert(getErrorMessage(error, 'Failed to update follow-up draft.'));
+        return;
+      }
     } else {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('follow_ups')
         .insert({ lead_id: lead.id, touch, channel: form.preferred_followup_channel, draft })
         .select()
         .single();
+      if (error) {
+        alert(getErrorMessage(error, 'Failed to create follow-up draft.'));
+        return;
+      }
       if (data) setFollowUps([...followUps, data as FollowUp]);
     }
     router.refresh();
@@ -91,14 +118,22 @@ export function LeadDetailClient({
     const existing = followUps.find((f) => f.touch === touch);
     if (!existing) return;
     const supabase = createSupabaseBrowserClient();
-    await supabase
+    const { error: sentError } = await supabase
       .from('follow_ups')
       .update({ sent_at: new Date().toISOString(), sent_by_id: currentUser.id })
       .eq('id', existing.id);
+    if (sentError) {
+      alert(getErrorMessage(sentError, 'Failed to mark follow-up as sent.'));
+      return;
+    }
     const newStage: FollowUpStage =
       touch === 't1' ? 't1_immediate_thanks' :
       touch === 't2' ? 't2_value_add' : 't3_proposal';
-    await supabase.from('leads').update({ follow_up_stage: newStage }).eq('id', lead.id);
+    const { error: leadError } = await supabase.from('leads').update({ follow_up_stage: newStage }).eq('id', lead.id);
+    if (leadError) {
+      alert(getErrorMessage(leadError, 'Updated follow-up but failed to update stage.'));
+      return;
+    }
     router.refresh();
   }
 
@@ -255,7 +290,11 @@ function Field({ label, children, action }: { label: string; children: React.Rea
 }
 
 // Rule-based drafts
-function generateDraft(touch: 't1' | 't2' | 't3', lead: Lead, me: User): string {
+function generateDraft(
+  touch: 't1' | 't2' | 't3',
+  lead: Pick<Lead, 'full_name' | 'next_action' | 'notes'>,
+  me: User
+): string {
   const first = lead.full_name.split(' ')[0];
   const sig = me.signature || `${me.name}\nTAG Grading`;
   if (touch === 't1') {
