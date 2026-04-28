@@ -136,11 +136,24 @@ export function AmbientBackground() {
         }
       `}</style>
 
+      {/* Static color-depth wash — keeps the background from looking pale */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(circle at 15% 20%, rgba(20, 89, 91, 0.32) 0%, transparent 45%),' +
+            'radial-gradient(circle at 85% 30%, rgba(192, 138, 48, 0.28) 0%, transparent 45%),' +
+            'radial-gradient(circle at 70% 75%, rgba(236, 72, 153, 0.22) 0%, transparent 45%),' +
+            'radial-gradient(circle at 25% 80%, rgba(168, 85, 247, 0.22) 0%, transparent 45%),' +
+            'radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.16) 0%, transparent 55%)',
+        }}
+      />
+
       {/* Whole-viewport breathing wash */}
       <div
         className="ambient-bg-pulse absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse at 50% 40%, rgba(20, 89, 91, 0.12) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at 50% 40%, rgba(20, 89, 91, 0.18) 0%, transparent 70%)',
           animation: 'ambient-pulse-bg 9s ease-in-out infinite',
         }}
       />
@@ -216,43 +229,7 @@ export function AmbientBackground() {
         />
       ))}
 
-      {/* Embers */}
-      {EMBERS.map((e, i) => (
-        <span
-          key={`e${i}`}
-          className="ambient-ember absolute block rounded-full"
-          style={{
-            left: 0,
-            top: 0,
-            width: e.size,
-            height: e.size,
-            background: e.color,
-            boxShadow: `0 0 ${e.glow}px ${e.color}, 0 0 ${e.glow * 2}px ${e.color}, 0 0 ${e.glow * 3}px ${e.color}`,
-            ['--ax' as string]: e.startX,
-            ['--adx' as string]: e.driftX,
-            animation: `ambient-ember-rise ${e.duration}s linear ${e.delay}s infinite`,
-            opacity: 0,
-          }}
-        />
-      ))}
-
-      {/* Twinkle stars */}
-      {TWINKLES.map((t, i) => (
-        <span
-          key={`t${i}`}
-          className="ambient-twinkle absolute block rounded-full"
-          style={{
-            left: t.x,
-            top: t.y,
-            width: t.size,
-            height: t.size,
-            background: t.color,
-            boxShadow: `0 0 ${t.glow}px ${t.color}, 0 0 ${t.glow * 2}px ${t.color}`,
-            animation: `ambient-twinkle ${t.duration}s ease-in-out ${t.delay}s infinite`,
-            opacity: 0,
-          }}
-        />
-      ))}
+      {/* (round embers + twinkles removed — suits-only motion) */}
 
       {/* Floating small suit symbols */}
       {SUITS.map((s, i) => (
