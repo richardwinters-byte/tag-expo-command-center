@@ -21,7 +21,7 @@ export default async function IntelPage() {
   }
   return (
     <>
-      <TopBar title="Intel" subtitle="Observations on targets + competitors" showBack />
+      <TopBar title="Intel" subtitle="Targets + competitor observations" showBack />
       {anyError && (
         <div className="max-w-5xl mx-auto px-4 md:px-8 pt-4">
           <DataFetchError />

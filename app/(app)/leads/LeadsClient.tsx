@@ -118,7 +118,7 @@ export function LeadsClient({
             className="w-full pl-9"
           />
         </div>
-        <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar scroll-fade-r -mx-4 px-4 md:mx-0 md:px-0">
           <select value={owner} onChange={(e) => setParam('owner', e.target.value)} className="shrink-0">
             <option value="all">All owners</option>
             <option value="me">Me</option>
@@ -146,8 +146,13 @@ export function LeadsClient({
         <div className="flex items-center justify-between">
           <div className="text-xs text-tag-cold">{filtered.length} of {leads.length}</div>
           <div className="flex gap-2">
-            {isAdmin && filtered.length > 0 && (
-              <button onClick={exportCSV} className="btn-outline btn-sm">
+            {isAdmin && (
+              <button
+                onClick={exportCSV}
+                disabled={filtered.length === 0}
+                className="btn-outline btn-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                title={filtered.length === 0 ? 'Nothing to export yet' : 'Export filtered leads to CSV'}
+              >
                 <Download size={12} /> CSV
               </button>
             )}

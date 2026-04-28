@@ -66,7 +66,7 @@ export function HotCaptureFab({ pathname }: { pathname: string }) {
             href="/intel/new"
             icon={Zap}
             label="Capture intel"
-            sub="PSA, CGC, booth sighting"
+            sub="Competitor or booth note"
             tone="gold"
             onClick={() => setOpen(false)}
           />

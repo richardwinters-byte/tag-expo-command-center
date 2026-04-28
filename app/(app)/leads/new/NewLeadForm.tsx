@@ -12,16 +12,25 @@ import type { User, Temperature } from '@/lib/types';
 export function NewLeadForm({
   currentUser,
   targets,
+  defaultCompany = '',
+  defaultTargetId = '',
 }: {
   currentUser: User;
   targets: { id: string; company_name: string; tier: string }[];
+  defaultCompany?: string;
+  defaultTargetId?: string;
 }) {
   const router = useRouter();
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
+  // Resolve company name from target id if only target was passed
+  const initialCompany =
+    defaultCompany ||
+    (defaultTargetId ? targets.find((t) => t.id === defaultTargetId)?.company_name ?? '' : '');
+
   const [form, setForm] = useState({
     full_name: '',
-    company: '',
+    company: initialCompany,
     title: '',
     email: '',
     temperature: 'warm' as Temperature,

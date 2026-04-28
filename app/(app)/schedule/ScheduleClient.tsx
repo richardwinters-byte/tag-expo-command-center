@@ -253,7 +253,7 @@ export function ScheduleClient({
   return (
     <div className="max-w-5xl mx-auto px-4 md:px-8 py-5 md:py-8">
       {/* Day picker */}
-      <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+      <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar scroll-fade-r -mx-4 px-4 md:mx-0 md:px-0">
         {DAYS.map((d) => (
           <button
             key={d.iso}

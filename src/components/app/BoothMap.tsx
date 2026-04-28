@@ -127,6 +127,7 @@ export function BoothMap({ meetings, date }: BoothMapProps) {
                   width={1522}
                   height={1297}
                   priority
+                  unoptimized
                   className="select-none max-w-none"
                   draggable={false}
                 />

@@ -80,7 +80,7 @@ export function IntelClient({
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-8 py-5 md:py-8">
       <div className="space-y-2 mb-4">
-        <div className="flex gap-1.5 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+        <div className="flex gap-1.5 overflow-x-auto no-scrollbar scroll-fade-r -mx-4 px-4 md:mx-0 md:px-0">
           <FilterChip active={filterKind === 'all'} onClick={() => { setFilterKind('all'); setFilterValue(''); }}>All</FilterChip>
           <FilterChip active={filterKind === 'target'} onClick={() => { setFilterKind('target'); setFilterValue(targets[0]?.id ?? ''); }}>By target</FilterChip>
           <FilterChip active={filterKind === 'tag'} onClick={() => { setFilterKind('tag'); setFilterValue(usedTags[0] ?? ''); }} disabled={usedTags.length === 0}>By tag</FilterChip>

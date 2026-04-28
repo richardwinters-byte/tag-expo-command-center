@@ -184,6 +184,13 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Hint at horizontal overflow: fade the right edge so clipped content
+   reads as "scroll right for more" instead of looking like a render bug. */
+.scroll-fade-r {
+  mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+}
+
 /* Page entrance: content rises 8px and fades in on mount. 200ms, no bounce. */
 @keyframes page-enter {
   from { opacity: 0; transform: translateY(8px); }

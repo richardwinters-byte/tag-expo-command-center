@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { ChevronDown, X, SlidersHorizontal } from 'lucide-react';
+import { ChevronDown, X, SlidersHorizontal, Search, BadgeCheck } from 'lucide-react';
 import { TierBadge, PriorityBadge, StatusPill, trackColor } from '@/components/app/Pills';
 import { coverageLabel, trackLabel } from '@/lib/utils';
 import type { Target } from '@/lib/types';
@@ -50,6 +50,8 @@ export function TargetsClient({ targets }: { targets: Target[] }) {
   const [tierFilter, setTierFilter] = useState<string>('all');
   const [trackFilter, setTrackFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [search, setSearch] = useState('');
   const [groupBy, setGroupBy] = useState<GroupBy>('tier');
   const [filtersOpen, setFiltersOpen] = useState(false);
 
@@ -70,16 +72,19 @@ export function TargetsClient({ targets }: { targets: Target[] }) {
     return STATUS_ORDER.filter((s) => present.has(s as Target['status']));
   }, [targets]);
 
-  const filtered = useMemo(
-    () =>
-      targets.filter(
-        (t) =>
-          (tierFilter === 'all' || t.tier === tierFilter) &&
-          (trackFilter === 'all' || t.track === trackFilter) &&
-          (statusFilter === 'all' || t.status === statusFilter)
-      ),
-    [targets, tierFilter, trackFilter, statusFilter]
-  );
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return targets.filter((t) => {
+      if (tierFilter !== 'all' && t.tier !== tierFilter) return false;
+      if (trackFilter !== 'all' && t.track !== trackFilter) return false;
+      if (statusFilter !== 'all' && t.status !== statusFilter) return false;
+      // "Verified at expo" v1 = has a confirmed booth number on the floor plan.
+      // (Future: expand to meeting-table / verified speaker / panelist flags.)
+      if (verifiedOnly && !t.booth_number) return false;
+      if (q && !t.company_name.toLowerCase().includes(q)) return false;
+      return true;
+    });
+  }, [targets, tierFilter, trackFilter, statusFilter, verifiedOnly, search]);
 
   // Contextual count for a hypothetical filter change (keeps other active filters in play)
   function countWith(dim: 'tier' | 'track' | 'status', value: string): number {
@@ -120,15 +125,53 @@ export function TargetsClient({ targets }: { targets: Target[] }) {
     return key.replace(/_/g, ' ');
   };
 
-  const activeCount = [tierFilter, trackFilter, statusFilter].filter((v) => v !== 'all').length;
+  const activeCount =
+    [tierFilter, trackFilter, statusFilter].filter((v) => v !== 'all').length +
+    (verifiedOnly ? 1 : 0);
   const clearAll = () => {
     setTierFilter('all');
     setTrackFilter('all');
     setStatusFilter('all');
+    setVerifiedOnly(false);
+    setSearch('');
   };
+
+  const verifiedCount = useMemo(() => targets.filter((t) => !!t.booth_number).length, [targets]);
 
   return (
     <div className="max-w-5xl mx-auto px-4 md:px-8 py-5 md:py-8">
+      {/* Search + Verified-attendance toggle */}
+      <div className="flex flex-col gap-2 mb-3 md:flex-row md:items-center">
+        <div className="relative flex-1">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-tag-cold" />
+          <input
+            type="search"
+            placeholder="Search targets by company name…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-9"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={() => setVerifiedOnly((v) => !v)}
+          className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-btn text-sm font-medium border transition-colors shrink-0 ${
+            verifiedOnly
+              ? 'bg-tag-900 text-white border-tag-900'
+              : 'bg-white border-hairline hover:bg-tag-100'
+          }`}
+          title="Show only targets with a confirmed booth number on the floor plan"
+        >
+          <BadgeCheck size={14} />
+          Verified at expo
+          <span className={`text-[10px] font-semibold rounded-full min-w-[18px] h-[18px] inline-flex items-center justify-center px-1 ${
+            verifiedOnly ? 'bg-white/20 text-white' : 'bg-tag-100 text-tag-700'
+          }`}>
+            {verifiedCount}
+          </span>
+        </button>
+      </div>
+
       {/* Control row */}
       <div className="flex items-center gap-2 mb-3">
         <button

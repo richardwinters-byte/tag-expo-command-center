@@ -84,7 +84,7 @@ export function DebriefClient({
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-8 py-5 md:py-8 space-y-5">
       {/* Date picker */}
-      <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+      <div className="flex gap-2 overflow-x-auto no-scrollbar scroll-fade-r -mx-4 px-4 md:mx-0 md:px-0">
         {DATES.map((d) => (
           <a
             key={d}
