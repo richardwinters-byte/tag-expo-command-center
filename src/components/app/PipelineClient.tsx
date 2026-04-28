@@ -341,6 +341,35 @@ export function PipelineClient({
           </div>
         </section>
 
+        {/* SECTION 1.5: Visual charts (funnel + stage distribution + track donut) */}
+        <section>
+          <div className="section-header">Pipeline charts</div>
+          <div className="grid gap-3 md:grid-cols-2">
+            <FunnelChart
+              steps={[
+                { label: 'Tier 1+2 targets', value: tier12Targets.length, color: '#0B2F31' },
+                { label: 'Captured leads', value: totalLeads, color: '#14595B' },
+                { label: 'Reached T2+', value: advanced, color: '#0F7B4A' },
+                { label: 'Hot leads', value: hotLeads.length, color: '#C08A30' },
+                { label: 'Pilot closed', value: pilotsReached, color: '#E8B95B' },
+              ]}
+            />
+            <StageBarChart
+              counts={stageCounts}
+              total={totalLeads}
+            />
+          </div>
+          {sortedTracks.length > 0 && (
+            <div className="mt-3">
+              <TrackDonut
+                tracks={sortedTracks.map((t) => ({ track: t.track, total: t.total, hot: t.hot }))}
+                onSelect={(track) => setTrackFilter(trackFilter === track ? 'all' : track)}
+                activeTrack={trackFilter === 'all' ? null : (trackFilter as Track)}
+              />
+            </div>
+          )}
+        </section>
+
         {/* SECTION 2: Headline stats */}
         <section>
           <div className="section-header">Current state{filtersActive && ' · filtered'}</div>
@@ -827,5 +856,194 @@ function StatCard({ label, value, sub, icon: Icon, tone, onClick }: {
       <div className="text-2xl font-bold text-tag-ink"><FlashingNumber value={value} /></div>
       <div className="text-[11px] text-tag-cold mt-0.5">{sub}</div>
     </button>
+  );
+}
+
+// ============================================================
+// CHARTS
+// ============================================================
+
+const TRACK_COLORS: Record<string, string> = {
+  agent: '#14595B',
+  retailer: '#C08A30',
+  ip_owner: '#0F7B4A',
+  cpg: '#8B4A00',
+  international: '#9C27B0',
+  new_surfaced: '#6B7280',
+  custom_collectibles: '#E8B95B',
+  ambient: '#22D3EE',
+  sports: '#EC4899',
+  entertainment: '#A855F7',
+  gaming: '#22D3EE',
+  retail: '#F59E0B',
+};
+
+function FunnelChart({ steps }: { steps: { label: string; value: number; color: string }[] }) {
+  const max = Math.max(1, ...steps.map((s) => s.value));
+  return (
+    <div className="card card-p">
+      <div className="text-[10px] font-semibold uppercase tracking-wider text-tag-cold mb-3">
+        Funnel · target → pilot
+      </div>
+      <div className="space-y-2">
+        {steps.map((s, i) => {
+          const widthPct = (s.value / max) * 100;
+          const dropPct =
+            i > 0 && steps[i - 1].value > 0
+              ? Math.round((1 - s.value / steps[i - 1].value) * 100)
+              : null;
+          return (
+            <div key={s.label} className="flex items-center gap-2">
+              <div className="w-[42%] text-[11px] text-tag-ink truncate">{s.label}</div>
+              <div className="flex-1 relative h-7 rounded-md bg-tag-50 dark:bg-white/5 overflow-hidden">
+                <div
+                  className="h-full transition-all duration-700"
+                  style={{
+                    width: `${widthPct}%`,
+                    backgroundColor: s.color,
+                  }}
+                />
+                <div className="absolute inset-0 flex items-center px-2 text-[11px] font-mono font-semibold text-tag-ink dark:text-white">
+                  {s.value}
+                  {dropPct !== null && dropPct > 0 && (
+                    <span className="ml-2 text-[10px] text-tag-cold font-normal">
+                      −{dropPct}%
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function StageBarChart({ counts, total }: { counts: Record<string, number>; total: number }) {
+  const stages: { key: string; label: string; color: string }[] = [
+    { key: 'not_started', label: 'Not started', color: '#8B97A0' },
+    { key: 't1_immediate_thanks', label: 'T1 · Thanks', color: '#14595B' },
+    { key: 't2_value_add', label: 'T2 · Value', color: '#0F7B4A' },
+    { key: 't3_proposal', label: 'T3 · Proposal', color: '#C08A30' },
+  ];
+  const max = Math.max(1, ...stages.map((s) => counts[s.key] ?? 0));
+  return (
+    <div className="card card-p">
+      <div className="text-[10px] font-semibold uppercase tracking-wider text-tag-cold mb-3">
+        Stage distribution · {total} lead{total === 1 ? '' : 's'}
+      </div>
+      <div className="flex items-end gap-3 h-32">
+        {stages.map((s) => {
+          const v = counts[s.key] ?? 0;
+          const heightPct = (v / max) * 100;
+          return (
+            <div key={s.key} className="flex-1 flex flex-col items-center justify-end gap-1.5 min-w-0">
+              <div className="text-[11px] font-mono font-semibold text-tag-ink">{v}</div>
+              <div
+                className="w-full rounded-t transition-all duration-700"
+                style={{
+                  height: `${Math.max(heightPct, v > 0 ? 4 : 0)}%`,
+                  backgroundColor: s.color,
+                  minHeight: v > 0 ? 4 : 0,
+                }}
+              />
+              <div className="text-[10px] text-tag-cold w-full text-center truncate">
+                {s.label}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function TrackDonut({
+  tracks,
+  onSelect,
+  activeTrack,
+}: {
+  tracks: { track: Track; total: number; hot: number }[];
+  onSelect: (t: Track) => void;
+  activeTrack: Track | null;
+}) {
+  const total = tracks.reduce((sum, t) => sum + t.total, 0);
+  if (total === 0) return null;
+  const radius = 56;
+  const circumference = 2 * Math.PI * radius;
+  let offset = 0;
+  const segments = tracks.map((t) => {
+    const fraction = t.total / total;
+    const dash = fraction * circumference;
+    const seg = {
+      track: t.track,
+      total: t.total,
+      hot: t.hot,
+      color: TRACK_COLORS[t.track] ?? '#6B7280',
+      dasharray: `${dash} ${circumference - dash}`,
+      dashoffset: -offset,
+    };
+    offset += dash;
+    return seg;
+  });
+  return (
+    <div className="card card-p">
+      <div className="text-[10px] font-semibold uppercase tracking-wider text-tag-cold mb-3">
+        Lead distribution by track · tap to filter
+      </div>
+      <div className="flex flex-col md:flex-row items-center gap-5">
+        <svg width="140" height="140" viewBox="0 0 140 140" className="shrink-0">
+          <circle cx="70" cy="70" r={radius} fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth="20" />
+          {segments.map((s) => (
+            <circle
+              key={s.track}
+              cx="70"
+              cy="70"
+              r={radius}
+              fill="none"
+              stroke={s.color}
+              strokeWidth="20"
+              strokeDasharray={s.dasharray}
+              strokeDashoffset={s.dashoffset}
+              transform="rotate(-90 70 70)"
+              style={{
+                opacity: activeTrack && activeTrack !== s.track ? 0.25 : 1,
+                transition: 'opacity 200ms',
+              }}
+            />
+          ))}
+          <text x="70" y="65" textAnchor="middle" fontSize="20" fontWeight="700" fill="currentColor">
+            {total}
+          </text>
+          <text x="70" y="83" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.6">
+            LEADS
+          </text>
+        </svg>
+        <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+          {segments.map((s) => (
+            <button
+              key={s.track}
+              type="button"
+              onClick={() => onSelect(s.track)}
+              className={`flex items-center justify-between gap-2 rounded-btn px-2.5 py-1.5 text-[11px] transition-colors ${
+                activeTrack === s.track
+                  ? 'bg-tag-gold/10 ring-1 ring-tag-gold'
+                  : 'hover:bg-tag-50 dark:hover:bg-white/5'
+              }`}
+            >
+              <span className="flex items-center gap-1.5 min-w-0">
+                <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: s.color }} />
+                <span className="truncate capitalize">{s.track.replace(/_/g, ' ')}</span>
+              </span>
+              <span className="font-mono shrink-0">
+                {s.total}
+                {s.hot > 0 && <span className="text-tag-gold-dark"> · {s.hot}🔥</span>}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

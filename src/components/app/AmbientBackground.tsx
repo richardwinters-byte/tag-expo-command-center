@@ -192,7 +192,7 @@ export function AmbientBackground() {
         }}
       />
 
-      {/* Searchlights — two beams */}
+      {/* Searchlights — six beams sweeping from opposite sides at varied angles */}
       <div
         className="ambient-searchlight absolute top-0 bottom-0 w-[7vw] -ml-[3.5vw]"
         style={{
@@ -210,6 +210,46 @@ export function AmbientBackground() {
           filter: 'blur(10px)',
           animation: 'ambient-searchlight-2 22s linear infinite',
           animationDelay: '4s',
+        }}
+      />
+      <div
+        className="ambient-searchlight absolute top-0 bottom-0 w-[5vw] -ml-[2.5vw]"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, rgba(236, 72, 153, 0.28) 30%, rgba(236, 72, 153, 0.6) 50%, rgba(236, 72, 153, 0.28) 70%, transparent 100%)',
+          filter: 'blur(9px)',
+          animation: 'ambient-searchlight 26s linear infinite',
+          animationDelay: '8s',
+        }}
+      />
+      <div
+        className="ambient-searchlight absolute top-0 bottom-0 w-[5vw] -ml-[2.5vw]"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, rgba(168, 85, 247, 0.28) 30%, rgba(168, 85, 247, 0.6) 50%, rgba(168, 85, 247, 0.28) 70%, transparent 100%)',
+          filter: 'blur(9px)',
+          animation: 'ambient-searchlight-2 28s linear infinite',
+          animationDelay: '12s',
+        }}
+      />
+      <div
+        className="ambient-searchlight absolute top-0 bottom-0 w-[4vw] -ml-[2vw]"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, rgba(34, 211, 238, 0.28) 30%, rgba(34, 211, 238, 0.55) 50%, rgba(34, 211, 238, 0.28) 70%, transparent 100%)',
+          filter: 'blur(8px)',
+          animation: 'ambient-searchlight 24s linear infinite',
+          animationDelay: '14s',
+        }}
+      />
+      <div
+        className="ambient-searchlight absolute top-0 bottom-0 w-[4vw] -ml-[2vw]"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, rgba(15, 123, 74, 0.28) 30%, rgba(15, 123, 74, 0.5) 50%, rgba(15, 123, 74, 0.28) 70%, transparent 100%)',
+          filter: 'blur(8px)',
+          animation: 'ambient-searchlight-2 30s linear infinite',
+          animationDelay: '18s',
         }}
       />
 
@@ -334,4 +374,17 @@ const SUITS: { glyph: string; color: string; size: string; startX: string; drift
   { glyph: '♣', color: 'rgba(20, 89, 91, 0.85)',   size: '2rem',  startX: '90vw', driftX: '-5vw', duration: 12, delay: 11,  rotateEnd: '-360deg' },
   { glyph: '♥', color: 'rgba(34, 211, 238, 0.85)', size: '2.5rem', startX: '25vw', driftX: '-4vw', duration: 14, delay: 17,  rotateEnd: '360deg' },
   { glyph: '♠', color: 'rgba(192, 138, 48, 0.85)', size: '2rem',  startX: '58vw', driftX: '7vw',  duration: 13, delay: 20,  rotateEnd: '-360deg' },
+  // Bonus second wave — extra density across the viewport
+  { glyph: '♣', color: 'rgba(232, 185, 91, 0.78)', size: '5rem',  startX: '45vw', driftX: '-7vw', duration: 25, delay: 4,   rotateEnd: '-180deg' },
+  { glyph: '♥', color: 'rgba(168, 85, 247, 0.78)', size: '6rem',  startX: '78vw', driftX: '-11vw', duration: 27, delay: 9,  rotateEnd: '360deg' },
+  { glyph: '♦', color: 'rgba(20, 89, 91, 0.78)',   size: '5rem',  startX: '20vw', driftX: '14vw', duration: 24, delay: 14,  rotateEnd: '-450deg' },
+  { glyph: '♠', color: 'rgba(34, 211, 238, 0.78)', size: '5rem',  startX: '65vw', driftX: '-9vw', duration: 26, delay: 19,  rotateEnd: '450deg' },
+  { glyph: '♣', color: 'rgba(236, 72, 153, 0.85)', size: '3rem',  startX: '8vw',  driftX: '6vw',  duration: 18, delay: 6,   rotateEnd: '360deg' },
+  { glyph: '♥', color: 'rgba(15, 123, 74, 0.85)',  size: '3.5rem', startX: '88vw', driftX: '-7vw', duration: 19, delay: 12,  rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(168, 85, 247, 0.85)', size: '2.5rem', startX: '30vw', driftX: '-5vw', duration: 16, delay: 9.5, rotateEnd: '540deg' },
+  { glyph: '♠', color: 'rgba(232, 185, 91, 0.85)', size: '3rem',   startX: '52vw', driftX: '8vw',  duration: 17, delay: 13.5, rotateEnd: '-540deg' },
+  { glyph: '♥', color: 'rgba(20, 89, 91, 0.85)',   size: '2.5rem', startX: '72vw', driftX: '-6vw', duration: 15, delay: 16.5, rotateEnd: '360deg' },
+  { glyph: '♣', color: 'rgba(34, 211, 238, 0.9)',  size: '2.5rem', startX: '42vw', driftX: '5vw',  duration: 16, delay: 21,   rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(255, 255, 255, 0.6)', size: '3rem',   startX: '85vw', driftX: '-10vw', duration: 18, delay: 23,  rotateEnd: '720deg' },
+  { glyph: '♠', color: 'rgba(236, 72, 153, 0.85)', size: '2rem',   startX: '5vw',  driftX: '8vw',  duration: 14, delay: 24,   rotateEnd: '-720deg' },
 ];
