@@ -79,6 +79,7 @@ export function NextUpBanner() {
         .neq('status', 'completed')
         .neq('status', 'cancelled')
         .gte('end_at', since)
+        .lte('start_at', '2026-05-22T00:00:00-07:00')
         .order('start_at')
         .limit(8);
       if (!cancelled && data) setMeetings(data as NextMeeting[]);
