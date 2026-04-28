@@ -11,6 +11,14 @@ import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
 import { uploadAttachment } from '@/lib/attachments';
 import type { Lead, User, Temperature } from '@/lib/types';
 
+function localDateYYYYMMDD() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export function LeadsClient({
   currentUserId,
   isAdmin,
@@ -58,7 +66,8 @@ export function LeadsClient({
       if (stage !== 'all' && l.follow_up_stage !== stage) return false;
       if (search && !(`${l.full_name} ${l.company} ${l.title ?? ''} ${l.email ?? ''}`.toLowerCase().includes(search.toLowerCase()))) return false;
       if (due === 'today') {
-        const today = new Date().toISOString().slice(0, 10);
+        // Use local calendar date (not UTC) so "today" matches the user's day boundary.
+        const today = localDateYYYYMMDD();
         if (!l.deadline || l.deadline > today) return false;
       }
       return true;
@@ -172,7 +181,7 @@ export function LeadsClient({
                   <th className="text-left px-3 py-2.5">Stage</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-hairline">
+              <tbody className="divide-y divide-hairline motion-list">
                 {filtered.map((l) => (
                   <LeadTableRow key={l.id} lead={l} usersById={usersById} />
                 ))}
@@ -181,7 +190,7 @@ export function LeadsClient({
           </div>
 
           {/* Mobile cards */}
-          <div className="md:hidden space-y-2">
+          <div className="md:hidden space-y-2 motion-list">
             {filtered.map((l) => (
               <LeadMobileCard key={l.id} lead={l} usersById={usersById} />
             ))}
@@ -286,12 +295,13 @@ function QuickAddLead({
     if (!fullName.trim() || !company.trim()) return;
     setSaving(true);
     const supabase = createSupabaseBrowserClient();
-    const matchedTarget = targets.find((t) => t.company_name.toLowerCase() === company.toLowerCase());
+    const normalizedCompany = company.trim();
+    const matchedTarget = targets.find((t) => t.company_name.trim().toLowerCase() === normalizedCompany.toLowerCase());
     const { data, error } = await supabase
       .from('leads')
       .insert({
         full_name: fullName.trim(),
-        company: company.trim(),
+        company: normalizedCompany,
         title: title.trim() || null,
         email: email.trim() || null,
         temperature,

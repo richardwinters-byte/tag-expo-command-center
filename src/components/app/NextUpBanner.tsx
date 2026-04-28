@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { ChevronRight, Circle, Check, X, Minimize2, Loader2 } from 'lucide-react';
 import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
+import { getErrorMessage } from '@/lib/utils';
 
 type NextMeeting = {
   id: string;
@@ -78,7 +79,6 @@ export function NextUpBanner() {
         .neq('status', 'completed')
         .neq('status', 'cancelled')
         .gte('end_at', since)
-        .lte('start_at', '2026-05-22T00:00:00-07:00')
         .order('start_at')
         .limit(8);
       if (!cancelled && data) setMeetings(data as NextMeeting[]);
@@ -184,21 +184,28 @@ export function NextUpBanner() {
   if (completing) {
     async function submitComplete() {
       setSaving(true);
-      const supabase = createSupabaseBrowserClient();
-      await supabase
-        .from('meetings')
-        .update({
-          status: 'completed',
-          outcome: outcome.trim() || meeting.outcome || null,
-          next_action: nextAction.trim() || meeting.next_action || null,
-        })
-        .eq('id', meeting.id);
-      setSaving(false);
-      setCompleting(false);
-      setOutcome('');
-      setNextAction('');
-      if (fetchMeetings.current) await fetchMeetings.current();
-      router.refresh();
+      try {
+        const supabase = createSupabaseBrowserClient();
+        const { error } = await supabase
+          .from('meetings')
+          .update({
+            status: 'completed',
+            outcome: outcome.trim() || meeting.outcome || null,
+            next_action: nextAction.trim() || meeting.next_action || null,
+          })
+          .eq('id', meeting.id);
+        if (error) {
+          alert(getErrorMessage(error, 'Failed to complete meeting.'));
+          return;
+        }
+        setCompleting(false);
+        setOutcome('');
+        setNextAction('');
+        if (fetchMeetings.current) await fetchMeetings.current();
+        router.refresh();
+      } finally {
+        setSaving(false);
+      }
     }
     return (
       <div className="text-white" style={{ backgroundColor: bg }}>

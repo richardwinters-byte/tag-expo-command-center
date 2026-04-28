@@ -196,6 +196,50 @@
   .page-enter { animation: none; }
 }
 
+/* Motion system primitives */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes card-sheen {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(180%); }
+}
+.motion-fade-up { animation: fade-up 220ms ease-out both; }
+.motion-scale-in { animation: scale-in 220ms ease-out both; }
+.motion-list > * { animation: fade-up 240ms ease-out both; }
+.motion-list > *:nth-child(2) { animation-delay: 40ms; }
+.motion-list > *:nth-child(3) { animation-delay: 80ms; }
+.motion-list > *:nth-child(4) { animation-delay: 120ms; }
+.motion-list > *:nth-child(5) { animation-delay: 160ms; }
+
+/* Login-specific motion */
+.motion-login-stage-1 { animation: fade-up 350ms ease-out both; }
+.motion-login-stage-2 { animation: scale-in 420ms ease-out both; animation-delay: 80ms; }
+.motion-logo-glow { box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 8px 30px rgba(192,138,48,0.25); }
+.motion-card-sheen { position: relative; overflow: hidden; }
+.motion-card-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 20%, rgba(192,138,48,0.12) 50%, transparent 80%);
+  animation: card-sheen 2.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .motion-fade-up,
+  .motion-scale-in,
+  .motion-list > *,
+  .motion-login-stage-1,
+  .motion-login-stage-2,
+  .motion-card-sheen::after {
+    animation: none !important;
+  }
+}
+
 /* Live-status pulse: gentle gold ring pulse for meetings / banners that are imminent or live. */
 @keyframes live-pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(192, 138, 48, 0.55); }

@@ -1,11 +1,24 @@
 // TAG Expo Command Center - Service Worker
 // Caches last-synced view of key screens for offline read.
 // Bump CACHE version on deploys that change this file or need a cache reset.
-const CACHE = 'tag-expo-v3';
+const CACHE = 'tag-expo-v4';
+const AUTH_HTML_PREFIX = '/__authcache';
 
 // Pages to precache on install so they're available before first visit
 // (critical for the booth floor where Vegas Wi-Fi is unreliable).
-const OFFLINE_URLS = ['/today', '/schedule', '/leads', '/intel', '/debrief', '/morning', '/offline'];
+// Keep this list public-only. Auth pages are cached lazily after successful
+// signed-in navigation, never at install time.
+const OFFLINE_URLS = ['/offline', '/manifest.json', '/icon-192.png', '/icon-512.png'];
+const AUTH_PATHS = ['/today', '/schedule', '/leads', '/intel', '/debrief', '/morning', '/targets', '/pipeline', '/map', '/report', '/settings'];
+
+function isAuthHtml(url) {
+  return AUTH_PATHS.some((path) => url.pathname === path || url.pathname.startsWith(path + '/'));
+}
+
+async function broadcast(type, payload = {}) {
+  const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+  clients.forEach((client) => client.postMessage({ type, ...payload }));
+}
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -35,6 +48,21 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'CLEAR_AUTH_CACHE') {
+    event.waitUntil((async () => {
+      const cache = await caches.open(CACHE);
+      const keys = await cache.keys();
+      await Promise.all(
+        keys
+          .filter((request) => new URL(request.url).pathname.startsWith(AUTH_HTML_PREFIX + '/'))
+          .map((request) => cache.delete(request))
+      );
+      await broadcast('sync-complete', { detail: 'cache-cleared' });
+    })());
+  }
+});
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
@@ -50,10 +78,20 @@ self.addEventListener('fetch', (event) => {
   if (request.mode === 'navigate' || (request.headers.get('accept') || '').includes('text/html')) {
     event.respondWith(
       caches.open(CACHE).then(async (cache) => {
-        const cached = await cache.match(request);
+        const url = new URL(request.url);
+        const authKey = isAuthHtml(url) ? authCachePath(url) : `${url.pathname}${url.search}`;
+        const cacheKey = new Request(authKey);
+        const cached = await cache.match(cacheKey);
         const networkFetch = fetch(request)
           .then((response) => {
-            if (response && response.ok) cache.put(request, response.clone());
+            const finalUrl = new URL(response.url || request.url);
+            const redirectedToLogin = response.redirected && finalUrl.pathname.startsWith('/login');
+            if (response && response.ok && !redirectedToLogin) {
+              cache.put(cacheKey, response.clone());
+              if (isAuthHtml(finalUrl)) {
+                broadcast('offline-ready', { path: finalUrl.pathname }).catch(() => {});
+              }
+            }
             return response;
           })
           .catch(async () => {
@@ -85,3 +123,6 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+function authCachePath(url) {
+  return `${AUTH_HTML_PREFIX}${url.pathname}${url.search}`;
+}

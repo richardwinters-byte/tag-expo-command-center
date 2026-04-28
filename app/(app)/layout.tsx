@@ -5,6 +5,7 @@ import { HotCaptureFabMount } from '@/components/app/HotCaptureFabMount';
 import { NextUpBanner } from '@/components/app/NextUpBanner';
 import { CommandPalette } from '@/components/app/CommandPalette';
 import { AmbientBackground } from '@/components/app/AmbientBackground';
+import { PwaStatus } from '@/components/app/PwaStatus';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
@@ -26,6 +27,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <BottomNav />
       <HotCaptureFabMount />
       <CommandPalette />
+      <PwaStatus />
     </div>
   );
 }
