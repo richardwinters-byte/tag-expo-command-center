@@ -252,6 +252,67 @@ export function AmbientBackground() {
           animationDelay: '18s',
         }}
       />
+      {/* Spotlight encore — six more beams to fill the strip */}
+      <div
+        className="ambient-searchlight absolute top-0 bottom-0 w-[5vw] -ml-[2.5vw]"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, rgba(232, 185, 91, 0.4) 30%, rgba(232, 185, 91, 0.75) 50%, rgba(232, 185, 91, 0.4) 70%, transparent 100%)',
+          filter: 'blur(8px)',
+          animation: 'ambient-searchlight 14s linear infinite',
+          animationDelay: '2s',
+        }}
+      />
+      <div
+        className="ambient-searchlight absolute top-0 bottom-0 w-[6vw] -ml-[3vw]"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.32) 30%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0.32) 70%, transparent 100%)',
+          filter: 'blur(7px)',
+          animation: 'ambient-searchlight-2 16s linear infinite',
+          animationDelay: '6s',
+        }}
+      />
+      <div
+        className="ambient-searchlight absolute top-0 bottom-0 w-[4vw] -ml-[2vw]"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, rgba(236, 72, 153, 0.4) 30%, rgba(236, 72, 153, 0.78) 50%, rgba(236, 72, 153, 0.4) 70%, transparent 100%)',
+          filter: 'blur(7px)',
+          animation: 'ambient-searchlight 20s linear infinite',
+          animationDelay: '10s',
+        }}
+      />
+      <div
+        className="ambient-searchlight absolute top-0 bottom-0 w-[4vw] -ml-[2vw]"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, rgba(168, 85, 247, 0.4) 30%, rgba(168, 85, 247, 0.78) 50%, rgba(168, 85, 247, 0.4) 70%, transparent 100%)',
+          filter: 'blur(7px)',
+          animation: 'ambient-searchlight-2 19s linear infinite',
+          animationDelay: '15s',
+        }}
+      />
+      <div
+        className="ambient-searchlight absolute top-0 bottom-0 w-[3.5vw] -ml-[1.75vw]"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, rgba(34, 211, 238, 0.4) 30%, rgba(34, 211, 238, 0.78) 50%, rgba(34, 211, 238, 0.4) 70%, transparent 100%)',
+          filter: 'blur(6px)',
+          animation: 'ambient-searchlight 17s linear infinite',
+          animationDelay: '20s',
+        }}
+      />
+      <div
+        className="ambient-searchlight absolute top-0 bottom-0 w-[5vw] -ml-[2.5vw]"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, rgba(255, 215, 0, 0.4) 30%, rgba(255, 215, 0, 0.75) 50%, rgba(255, 215, 0, 0.4) 70%, transparent 100%)',
+          filter: 'blur(7px)',
+          animation: 'ambient-searchlight-2 23s linear infinite',
+          animationDelay: '24s',
+        }}
+      />
 
       {/* Comets — six streaks at varied angles */}
       {COMETS.map((c, i) => (
@@ -349,42 +410,42 @@ const TWINKLES: { x: string; y: string; size: string; color: string; glow: numbe
 // floating suits drifting upward at varied speeds, with rotation and glow.
 const SUITS: { glyph: string; color: string; size: string; startX: string; driftX: string; duration: number; delay: number; rotateEnd: string }[] = [
   // Huge anchor suits (slow, dominant)
-  { glyph: '♠', color: 'rgba(20, 89, 91, 0.7)',    size: '12rem', startX: '5vw',  driftX: '6vw',  duration: 28, delay: 0,   rotateEnd: '180deg' },
-  { glyph: '♦', color: 'rgba(192, 138, 48, 0.78)', size: '10rem', startX: '70vw', driftX: '-8vw', duration: 32, delay: 6,   rotateEnd: '-360deg' },
-  { glyph: '♣', color: 'rgba(168, 85, 247, 0.7)',  size: '11rem', startX: '40vw', driftX: '5vw',  duration: 30, delay: 12,  rotateEnd: '270deg' },
-  { glyph: '♥', color: 'rgba(236, 72, 153, 0.78)', size: '9rem',  startX: '85vw', driftX: '-10vw', duration: 26, delay: 18, rotateEnd: '-540deg' },
+  { glyph: '♠', color: 'rgba(20, 89, 91, 0.7)',    size: '12rem', startX: '5vw',  driftX: '6vw',  duration: 15, delay: 0,   rotateEnd: '180deg' },
+  { glyph: '♦', color: 'rgba(192, 138, 48, 0.78)', size: '10rem', startX: '70vw', driftX: '-8vw', duration: 18, delay: 6,   rotateEnd: '-360deg' },
+  { glyph: '♣', color: 'rgba(168, 85, 247, 0.7)',  size: '11rem', startX: '40vw', driftX: '5vw',  duration: 16, delay: 12,  rotateEnd: '270deg' },
+  { glyph: '♥', color: 'rgba(236, 72, 153, 0.78)', size: '9rem',  startX: '85vw', driftX: '-10vw', duration: 14, delay: 18, rotateEnd: '-540deg' },
   // Large suits
-  { glyph: '♥', color: 'rgba(232, 185, 91, 0.75)', size: '7rem',  startX: '20vw', driftX: '8vw',  duration: 22, delay: 3,   rotateEnd: '360deg' },
-  { glyph: '♠', color: 'rgba(11, 47, 49, 0.75)',   size: '6rem',  startX: '55vw', driftX: '-6vw', duration: 24, delay: 9,   rotateEnd: '-360deg' },
-  { glyph: '♦', color: 'rgba(34, 211, 238, 0.78)', size: '7rem',  startX: '92vw', driftX: '-12vw', duration: 26, delay: 15, rotateEnd: '720deg' },
-  { glyph: '♣', color: 'rgba(15, 123, 74, 0.7)',   size: '6rem',  startX: '12vw', driftX: '10vw', duration: 23, delay: 21,  rotateEnd: '540deg' },
+  { glyph: '♥', color: 'rgba(232, 185, 91, 0.75)', size: '7rem',  startX: '20vw', driftX: '8vw',  duration: 12, delay: 3,   rotateEnd: '360deg' },
+  { glyph: '♠', color: 'rgba(11, 47, 49, 0.75)',   size: '6rem',  startX: '55vw', driftX: '-6vw', duration: 13, delay: 9,   rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(34, 211, 238, 0.78)', size: '7rem',  startX: '92vw', driftX: '-12vw', duration: 14, delay: 15, rotateEnd: '720deg' },
+  { glyph: '♣', color: 'rgba(15, 123, 74, 0.7)',   size: '6rem',  startX: '12vw', driftX: '10vw', duration: 13, delay: 21,  rotateEnd: '540deg' },
   // Medium suits
-  { glyph: '♠', color: 'rgba(232, 185, 91, 0.78)', size: '4rem',  startX: '32vw', driftX: '7vw',  duration: 19, delay: 1.5, rotateEnd: '360deg' },
-  { glyph: '♥', color: 'rgba(236, 72, 153, 0.85)', size: '3.5rem', startX: '48vw', driftX: '-6vw', duration: 17, delay: 4.5, rotateEnd: '-360deg' },
-  { glyph: '♦', color: 'rgba(34, 211, 238, 0.85)', size: '4rem',  startX: '62vw', driftX: '10vw', duration: 21, delay: 7.5, rotateEnd: '720deg' },
-  { glyph: '♣', color: 'rgba(168, 85, 247, 0.8)',  size: '3.5rem', startX: '78vw', driftX: '-9vw', duration: 18, delay: 10.5, rotateEnd: '-540deg' },
-  { glyph: '♥', color: 'rgba(232, 185, 91, 0.8)',  size: '3rem',  startX: '8vw',  driftX: '5vw',  duration: 16, delay: 13.5, rotateEnd: '360deg' },
-  { glyph: '♠', color: 'rgba(255, 255, 255, 0.65)', size: '3.5rem', startX: '88vw', driftX: '-8vw', duration: 19, delay: 16.5, rotateEnd: '-360deg' },
-  { glyph: '♦', color: 'rgba(236, 72, 153, 0.8)',  size: '4rem',  startX: '38vw', driftX: '14vw', duration: 22, delay: 19.5, rotateEnd: '540deg' },
-  { glyph: '♣', color: 'rgba(34, 211, 238, 0.8)',  size: '3rem',  startX: '72vw', driftX: '-12vw', duration: 20, delay: 22.5, rotateEnd: '-720deg' },
+  { glyph: '♠', color: 'rgba(232, 185, 91, 0.78)', size: '4rem',  startX: '32vw', driftX: '7vw',  duration: 10, delay: 1.5, rotateEnd: '360deg' },
+  { glyph: '♥', color: 'rgba(236, 72, 153, 0.85)', size: '3.5rem', startX: '48vw', driftX: '-6vw', duration: 9, delay: 4.5, rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(34, 211, 238, 0.85)', size: '4rem',  startX: '62vw', driftX: '10vw', duration: 12, delay: 7.5, rotateEnd: '720deg' },
+  { glyph: '♣', color: 'rgba(168, 85, 247, 0.8)',  size: '3.5rem', startX: '78vw', driftX: '-9vw', duration: 10, delay: 10.5, rotateEnd: '-540deg' },
+  { glyph: '♥', color: 'rgba(232, 185, 91, 0.8)',  size: '3rem',  startX: '8vw',  driftX: '5vw',  duration: 9, delay: 13.5, rotateEnd: '360deg' },
+  { glyph: '♠', color: 'rgba(255, 255, 255, 0.65)', size: '3.5rem', startX: '88vw', driftX: '-8vw', duration: 10, delay: 16.5, rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(236, 72, 153, 0.8)',  size: '4rem',  startX: '38vw', driftX: '14vw', duration: 12, delay: 19.5, rotateEnd: '540deg' },
+  { glyph: '♣', color: 'rgba(34, 211, 238, 0.8)',  size: '3rem',  startX: '72vw', driftX: '-12vw', duration: 11, delay: 22.5, rotateEnd: '-720deg' },
   // Small fast suits
-  { glyph: '♥', color: 'rgba(236, 72, 153, 0.9)',  size: '2rem',  startX: '15vw', driftX: '4vw',  duration: 14, delay: 2,   rotateEnd: '360deg' },
-  { glyph: '♦', color: 'rgba(232, 185, 91, 0.9)',  size: '2rem',  startX: '50vw', driftX: '-3vw', duration: 13, delay: 5,   rotateEnd: '-360deg' },
-  { glyph: '♠', color: 'rgba(168, 85, 247, 0.85)', size: '2.5rem', startX: '65vw', driftX: '6vw',  duration: 15, delay: 8,   rotateEnd: '720deg' },
-  { glyph: '♣', color: 'rgba(20, 89, 91, 0.85)',   size: '2rem',  startX: '90vw', driftX: '-5vw', duration: 12, delay: 11,  rotateEnd: '-360deg' },
-  { glyph: '♥', color: 'rgba(34, 211, 238, 0.85)', size: '2.5rem', startX: '25vw', driftX: '-4vw', duration: 14, delay: 17,  rotateEnd: '360deg' },
-  { glyph: '♠', color: 'rgba(192, 138, 48, 0.85)', size: '2rem',  startX: '58vw', driftX: '7vw',  duration: 13, delay: 20,  rotateEnd: '-360deg' },
+  { glyph: '♥', color: 'rgba(236, 72, 153, 0.9)',  size: '2rem',  startX: '15vw', driftX: '4vw',  duration: 8, delay: 2,   rotateEnd: '360deg' },
+  { glyph: '♦', color: 'rgba(232, 185, 91, 0.9)',  size: '2rem',  startX: '50vw', driftX: '-3vw', duration: 7, delay: 5,   rotateEnd: '-360deg' },
+  { glyph: '♠', color: 'rgba(168, 85, 247, 0.85)', size: '2.5rem', startX: '65vw', driftX: '6vw',  duration: 8, delay: 8,   rotateEnd: '720deg' },
+  { glyph: '♣', color: 'rgba(20, 89, 91, 0.85)',   size: '2rem',  startX: '90vw', driftX: '-5vw', duration: 7, delay: 11,  rotateEnd: '-360deg' },
+  { glyph: '♥', color: 'rgba(34, 211, 238, 0.85)', size: '2.5rem', startX: '25vw', driftX: '-4vw', duration: 8, delay: 17,  rotateEnd: '360deg' },
+  { glyph: '♠', color: 'rgba(192, 138, 48, 0.85)', size: '2rem',  startX: '58vw', driftX: '7vw',  duration: 7, delay: 20,  rotateEnd: '-360deg' },
   // Bonus second wave — extra density across the viewport
-  { glyph: '♣', color: 'rgba(232, 185, 91, 0.78)', size: '5rem',  startX: '45vw', driftX: '-7vw', duration: 25, delay: 4,   rotateEnd: '-180deg' },
-  { glyph: '♥', color: 'rgba(168, 85, 247, 0.78)', size: '6rem',  startX: '78vw', driftX: '-11vw', duration: 27, delay: 9,  rotateEnd: '360deg' },
-  { glyph: '♦', color: 'rgba(20, 89, 91, 0.78)',   size: '5rem',  startX: '20vw', driftX: '14vw', duration: 24, delay: 14,  rotateEnd: '-450deg' },
-  { glyph: '♠', color: 'rgba(34, 211, 238, 0.78)', size: '5rem',  startX: '65vw', driftX: '-9vw', duration: 26, delay: 19,  rotateEnd: '450deg' },
-  { glyph: '♣', color: 'rgba(236, 72, 153, 0.85)', size: '3rem',  startX: '8vw',  driftX: '6vw',  duration: 18, delay: 6,   rotateEnd: '360deg' },
-  { glyph: '♥', color: 'rgba(15, 123, 74, 0.85)',  size: '3.5rem', startX: '88vw', driftX: '-7vw', duration: 19, delay: 12,  rotateEnd: '-360deg' },
-  { glyph: '♦', color: 'rgba(168, 85, 247, 0.85)', size: '2.5rem', startX: '30vw', driftX: '-5vw', duration: 16, delay: 9.5, rotateEnd: '540deg' },
-  { glyph: '♠', color: 'rgba(232, 185, 91, 0.85)', size: '3rem',   startX: '52vw', driftX: '8vw',  duration: 17, delay: 13.5, rotateEnd: '-540deg' },
-  { glyph: '♥', color: 'rgba(20, 89, 91, 0.85)',   size: '2.5rem', startX: '72vw', driftX: '-6vw', duration: 15, delay: 16.5, rotateEnd: '360deg' },
-  { glyph: '♣', color: 'rgba(34, 211, 238, 0.9)',  size: '2.5rem', startX: '42vw', driftX: '5vw',  duration: 16, delay: 21,   rotateEnd: '-360deg' },
-  { glyph: '♦', color: 'rgba(255, 255, 255, 0.6)', size: '3rem',   startX: '85vw', driftX: '-10vw', duration: 18, delay: 23,  rotateEnd: '720deg' },
-  { glyph: '♠', color: 'rgba(236, 72, 153, 0.85)', size: '2rem',   startX: '5vw',  driftX: '8vw',  duration: 14, delay: 24,   rotateEnd: '-720deg' },
+  { glyph: '♣', color: 'rgba(232, 185, 91, 0.78)', size: '5rem',  startX: '45vw', driftX: '-7vw', duration: 14, delay: 4,   rotateEnd: '-180deg' },
+  { glyph: '♥', color: 'rgba(168, 85, 247, 0.78)', size: '6rem',  startX: '78vw', driftX: '-11vw', duration: 15, delay: 9,  rotateEnd: '360deg' },
+  { glyph: '♦', color: 'rgba(20, 89, 91, 0.78)',   size: '5rem',  startX: '20vw', driftX: '14vw', duration: 13, delay: 14,  rotateEnd: '-450deg' },
+  { glyph: '♠', color: 'rgba(34, 211, 238, 0.78)', size: '5rem',  startX: '65vw', driftX: '-9vw', duration: 14, delay: 19,  rotateEnd: '450deg' },
+  { glyph: '♣', color: 'rgba(236, 72, 153, 0.85)', size: '3rem',  startX: '8vw',  driftX: '6vw',  duration: 10, delay: 6,   rotateEnd: '360deg' },
+  { glyph: '♥', color: 'rgba(15, 123, 74, 0.85)',  size: '3.5rem', startX: '88vw', driftX: '-7vw', duration: 10, delay: 12,  rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(168, 85, 247, 0.85)', size: '2.5rem', startX: '30vw', driftX: '-5vw', duration: 9, delay: 9.5, rotateEnd: '540deg' },
+  { glyph: '♠', color: 'rgba(232, 185, 91, 0.85)', size: '3rem',   startX: '52vw', driftX: '8vw',  duration: 9, delay: 13.5, rotateEnd: '-540deg' },
+  { glyph: '♥', color: 'rgba(20, 89, 91, 0.85)',   size: '2.5rem', startX: '72vw', driftX: '-6vw', duration: 8, delay: 16.5, rotateEnd: '360deg' },
+  { glyph: '♣', color: 'rgba(34, 211, 238, 0.9)',  size: '2.5rem', startX: '42vw', driftX: '5vw',  duration: 9, delay: 21,   rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(255, 255, 255, 0.6)', size: '3rem',   startX: '85vw', driftX: '-10vw', duration: 10, delay: 23,  rotateEnd: '720deg' },
+  { glyph: '♠', color: 'rgba(236, 72, 153, 0.85)', size: '2rem',   startX: '5vw',  driftX: '8vw',  duration: 8, delay: 24,   rotateEnd: '-720deg' },
 ];
