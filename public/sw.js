@@ -1,7 +1,7 @@
 // TAG Expo Command Center - Service Worker
 // Caches last-synced view of key screens for offline read.
 // Bump CACHE version on deploys that change this file or need a cache reset.
-const CACHE = 'tag-expo-v10';
+const CACHE = 'tag-expo-v11';
 const AUTH_HTML_PREFIX = '/__authcache';
 
 // Pages to precache on install so they're available before first visit

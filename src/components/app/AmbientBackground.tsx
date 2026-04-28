@@ -145,29 +145,7 @@ export function AmbientBackground() {
         }}
       />
 
-      {/* GIANT SUIT ORBS — replacing the round blobs */}
-      {SUIT_ORBS.map((s, i) => (
-        <span
-          key={`so${i}`}
-          className={`ambient-suit-orb absolute select-none ${s.blend ? 'mix-blend-screen' : ''}`}
-          style={{
-            left: s.left,
-            top: s.top,
-            right: s.right,
-            bottom: s.bottom,
-            fontSize: s.size,
-            color: s.color,
-            textShadow: `0 0 ${s.glow}px ${s.color}, 0 0 ${s.glow * 2}px ${s.color}, 0 0 ${s.glow * 3}px ${s.color}`,
-            filter: `blur(${s.blur}px)`,
-            animation: s.pulse
-              ? `${s.anim} ${s.duration}s ease-in-out infinite, ambient-glow-pulse ${s.pulse}s ease-in-out infinite`
-              : `${s.anim} ${s.duration}s ease-in-out infinite`,
-            transformOrigin: 'center',
-          }}
-        >
-          {s.glyph}
-        </span>
-      ))}
+      {/* (giant drift-suits removed — only rising floating suits remain, see below) */}
 
       {/* Aurora */}
       <div
@@ -301,27 +279,7 @@ export function AmbientBackground() {
   );
 }
 
-// 10 large RECOGNIZABLE suit shapes drifting around (replacing the orb blobs).
-// Light blur keeps edges soft; heavy text-shadow halo gives the neon glow.
-// `anim` is the keyframe name (matched with @keyframes above).
-const SUIT_ORBS: {
-  glyph: string; color: string; size: string; blur: number; glow: number;
-  left?: string; top?: string; right?: string; bottom?: string;
-  anim: string; duration: number; pulse?: number; blend?: boolean;
-}[] = [
-  // TAG-brand suits
-  { glyph: '♠', color: 'rgba(20, 89, 91, 0.7)',   size: '15rem', blur: 1, glow: 28, left: '-2rem', top: '-1rem',                    anim: 'ambient-drift-1',      duration: 14, pulse: 5 },
-  { glyph: '♦', color: 'rgba(192, 138, 48, 0.78)', size: '13rem', blur: 1, glow: 30,                  right: '-1rem', bottom: '0rem', anim: 'ambient-drift-2',      duration: 18, pulse: 7 },
-  { glyph: '♣', color: 'rgba(15, 123, 74, 0.65)',  size: '11rem', blur: 1, glow: 24, left: '50%', top: '50%',                       anim: 'ambient-drift-3',      duration: 22 },
-  { glyph: '♥', color: 'rgba(232, 185, 91, 0.75)', size: '9rem',  blur: 0, glow: 22,                 right: '0rem', top: '0rem',    anim: 'ambient-drift-4',      duration: 12, pulse: 4 },
-  { glyph: '♠', color: 'rgba(11, 47, 49, 0.75)',   size: '10rem', blur: 1, glow: 22, left: '0rem', bottom: '0rem',                  anim: 'ambient-drift-5',      duration: 16 },
-  { glyph: '♦', color: 'rgba(232, 185, 91, 0.75)', size: '7rem',  blur: 0, glow: 18,                 right: '-1rem', bottom: '33%', anim: 'ambient-drift-6',      duration: 10, pulse: 3.5 },
-  { glyph: '♥', color: 'rgba(20, 89, 91, 0.7)',    size: '8rem',  blur: 0, glow: 18, left: '-1rem', top: '33%',                     anim: 'ambient-drift-7',      duration: 13 },
-  // Vegas neon suits
-  { glyph: '♥', color: 'rgba(236, 72, 153, 0.85)', size: '9rem',  blur: 0, glow: 24, left: '50%', top: '20%',                       anim: 'ambient-drift-pink',   duration: 15, pulse: 4.5, blend: true },
-  { glyph: '♣', color: 'rgba(168, 85, 247, 0.85)', size: '10rem', blur: 0, glow: 28, left: '25%', bottom: '20%',                    anim: 'ambient-drift-purple', duration: 17, pulse: 6,   blend: true },
-  { glyph: '♦', color: 'rgba(34, 211, 238, 0.85)', size: '8rem',  blur: 0, glow: 22, left: '50%', top: '30%',                       anim: 'ambient-drift-cyan',   duration: 11, pulse: 3.5, blend: true },
-];
+// (No drift-orbs — background is the rising-suit layer below.)
 
 const COMETS: { length: string; color: string; anim: string; duration: number; delay: number }[] = [
   { length: '60vw', color: 'rgba(232, 185, 91, 1)', anim: 'ambient-comet-a', duration: 9,  delay: 0 },
@@ -370,13 +328,33 @@ const TWINKLES: { x: string; y: string; size: string; color: string; glow: numbe
   { x: '88vw', y: '74vh', size: '3px', color: 'rgba(255, 255, 255, 1)', glow: 8,  duration: 4, delay: 0.4 },
 ];
 
+// Rising suits — main background motion. Mix of huge, medium, and small
+// floating suits drifting upward at varied speeds, with rotation and glow.
 const SUITS: { glyph: string; color: string; size: string; startX: string; driftX: string; duration: number; delay: number; rotateEnd: string }[] = [
-  { glyph: '♠', color: 'rgba(232, 185, 91, 0.85)', size: '36px', startX: '15vw', driftX: '8vw',  duration: 18, delay: 0,  rotateEnd: '360deg' },
-  { glyph: '♥', color: 'rgba(236, 72, 153, 0.9)',  size: '32px', startX: '38vw', driftX: '-6vw', duration: 20, delay: 4,  rotateEnd: '-360deg' },
-  { glyph: '♦', color: 'rgba(34, 211, 238, 0.85)', size: '34px', startX: '60vw', driftX: '10vw', duration: 22, delay: 8,  rotateEnd: '720deg' },
-  { glyph: '♣', color: 'rgba(168, 85, 247, 0.85)', size: '36px', startX: '82vw', driftX: '-9vw', duration: 24, delay: 12, rotateEnd: '-540deg' },
-  { glyph: '♥', color: 'rgba(232, 185, 91, 0.8)',  size: '28px', startX: '28vw', driftX: '5vw',  duration: 16, delay: 14, rotateEnd: '360deg' },
-  { glyph: '♠', color: 'rgba(255, 255, 255, 0.7)', size: '30px', startX: '70vw', driftX: '-8vw', duration: 19, delay: 18, rotateEnd: '-360deg' },
-  { glyph: '♦', color: 'rgba(236, 72, 153, 0.85)', size: '34px', startX: '5vw',  driftX: '14vw', duration: 21, delay: 22, rotateEnd: '540deg' },
-  { glyph: '♣', color: 'rgba(34, 211, 238, 0.85)', size: '32px', startX: '93vw', driftX: '-12vw', duration: 23, delay: 26, rotateEnd: '-720deg' },
+  // Huge anchor suits (slow, dominant)
+  { glyph: '♠', color: 'rgba(20, 89, 91, 0.7)',    size: '12rem', startX: '5vw',  driftX: '6vw',  duration: 28, delay: 0,   rotateEnd: '180deg' },
+  { glyph: '♦', color: 'rgba(192, 138, 48, 0.78)', size: '10rem', startX: '70vw', driftX: '-8vw', duration: 32, delay: 6,   rotateEnd: '-360deg' },
+  { glyph: '♣', color: 'rgba(168, 85, 247, 0.7)',  size: '11rem', startX: '40vw', driftX: '5vw',  duration: 30, delay: 12,  rotateEnd: '270deg' },
+  { glyph: '♥', color: 'rgba(236, 72, 153, 0.78)', size: '9rem',  startX: '85vw', driftX: '-10vw', duration: 26, delay: 18, rotateEnd: '-540deg' },
+  // Large suits
+  { glyph: '♥', color: 'rgba(232, 185, 91, 0.75)', size: '7rem',  startX: '20vw', driftX: '8vw',  duration: 22, delay: 3,   rotateEnd: '360deg' },
+  { glyph: '♠', color: 'rgba(11, 47, 49, 0.75)',   size: '6rem',  startX: '55vw', driftX: '-6vw', duration: 24, delay: 9,   rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(34, 211, 238, 0.78)', size: '7rem',  startX: '92vw', driftX: '-12vw', duration: 26, delay: 15, rotateEnd: '720deg' },
+  { glyph: '♣', color: 'rgba(15, 123, 74, 0.7)',   size: '6rem',  startX: '12vw', driftX: '10vw', duration: 23, delay: 21,  rotateEnd: '540deg' },
+  // Medium suits
+  { glyph: '♠', color: 'rgba(232, 185, 91, 0.78)', size: '4rem',  startX: '32vw', driftX: '7vw',  duration: 19, delay: 1.5, rotateEnd: '360deg' },
+  { glyph: '♥', color: 'rgba(236, 72, 153, 0.85)', size: '3.5rem', startX: '48vw', driftX: '-6vw', duration: 17, delay: 4.5, rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(34, 211, 238, 0.85)', size: '4rem',  startX: '62vw', driftX: '10vw', duration: 21, delay: 7.5, rotateEnd: '720deg' },
+  { glyph: '♣', color: 'rgba(168, 85, 247, 0.8)',  size: '3.5rem', startX: '78vw', driftX: '-9vw', duration: 18, delay: 10.5, rotateEnd: '-540deg' },
+  { glyph: '♥', color: 'rgba(232, 185, 91, 0.8)',  size: '3rem',  startX: '8vw',  driftX: '5vw',  duration: 16, delay: 13.5, rotateEnd: '360deg' },
+  { glyph: '♠', color: 'rgba(255, 255, 255, 0.65)', size: '3.5rem', startX: '88vw', driftX: '-8vw', duration: 19, delay: 16.5, rotateEnd: '-360deg' },
+  { glyph: '♦', color: 'rgba(236, 72, 153, 0.8)',  size: '4rem',  startX: '38vw', driftX: '14vw', duration: 22, delay: 19.5, rotateEnd: '540deg' },
+  { glyph: '♣', color: 'rgba(34, 211, 238, 0.8)',  size: '3rem',  startX: '72vw', driftX: '-12vw', duration: 20, delay: 22.5, rotateEnd: '-720deg' },
+  // Small fast suits
+  { glyph: '♥', color: 'rgba(236, 72, 153, 0.9)',  size: '2rem',  startX: '15vw', driftX: '4vw',  duration: 14, delay: 2,   rotateEnd: '360deg' },
+  { glyph: '♦', color: 'rgba(232, 185, 91, 0.9)',  size: '2rem',  startX: '50vw', driftX: '-3vw', duration: 13, delay: 5,   rotateEnd: '-360deg' },
+  { glyph: '♠', color: 'rgba(168, 85, 247, 0.85)', size: '2.5rem', startX: '65vw', driftX: '6vw',  duration: 15, delay: 8,   rotateEnd: '720deg' },
+  { glyph: '♣', color: 'rgba(20, 89, 91, 0.85)',   size: '2rem',  startX: '90vw', driftX: '-5vw', duration: 12, delay: 11,  rotateEnd: '-360deg' },
+  { glyph: '♥', color: 'rgba(34, 211, 238, 0.85)', size: '2.5rem', startX: '25vw', driftX: '-4vw', duration: 14, delay: 17,  rotateEnd: '360deg' },
+  { glyph: '♠', color: 'rgba(192, 138, 48, 0.85)', size: '2rem',  startX: '58vw', driftX: '7vw',  duration: 13, delay: 20,  rotateEnd: '-360deg' },
 ];
