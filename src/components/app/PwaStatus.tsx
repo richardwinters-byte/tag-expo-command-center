@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Download, WifiOff, RefreshCw, CheckCircle2 } from 'lucide-react';
 
 type BeforeInstallPromptEvent = Event & {
@@ -16,21 +16,35 @@ export function PwaStatus() {
 
   useEffect(() => {
     setOnline(navigator.onLine);
+
+    // Track every setTimeout we schedule so unmount can cancel them. Without
+    // this, a route change while a "syncing → idle" timer was in flight would
+    // call setState on an unmounted component.
+    const timers = new Set<ReturnType<typeof setTimeout>>();
+    const schedule = (fn: () => void, ms: number) => {
+      const id = setTimeout(() => {
+        timers.delete(id);
+        fn();
+      }, ms);
+      timers.add(id);
+      return id;
+    };
+
     const onOnline = () => {
       setOnline(true);
       setState('syncing');
-      setTimeout(() => setState('sync-complete'), 1000);
-      setTimeout(() => setState('idle'), 3000);
+      schedule(() => setState('sync-complete'), 1000);
+      schedule(() => setState('idle'), 3000);
     };
     const onOffline = () => setOnline(false);
     const onSWMessage = (e: MessageEvent<{ type?: string }>) => {
       if (e.data?.type === 'offline-ready') {
         setState('offline-ready');
-        setTimeout(() => setState('idle'), 2800);
+        schedule(() => setState('idle'), 2800);
       }
       if (e.data?.type === 'sync-complete') {
         setState('sync-complete');
-        setTimeout(() => setState('idle'), 2000);
+        schedule(() => setState('idle'), 2000);
       }
     };
     const onInstallPrompt = (e: Event) => {
@@ -46,6 +60,8 @@ export function PwaStatus() {
       window.removeEventListener('offline', onOffline);
       navigator.serviceWorker?.removeEventListener('message', onSWMessage as EventListener);
       window.removeEventListener('beforeinstallprompt', onInstallPrompt);
+      timers.forEach((id) => clearTimeout(id));
+      timers.clear();
     };
   }, []);
 

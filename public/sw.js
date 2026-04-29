@@ -1,13 +1,15 @@
 // TAG Expo Command Center - Service Worker
-// Caches last-synced view of key screens for offline read.
+// Caches public assets + login/offline pages. Authenticated app pages are
+// network-only on purpose: with two users sharing devices on the booth floor,
+// caching authenticated HTML created a real cross-user leak risk. The actual
+// app data lives in Supabase (network-only here anyway), so cached HTML
+// would only have been a stale empty shell — losing it costs nothing.
 // Bump CACHE version on deploys that change this file or need a cache reset.
-const CACHE = 'tag-expo-v15';
-const AUTH_HTML_PREFIX = '/__authcache';
+const CACHE = 'tag-expo-v16';
 
 // Pages to precache on install so they're available before first visit
-// (critical for the booth floor where Vegas Wi-Fi is unreliable).
-// Keep this list public-only. Auth pages are cached lazily after successful
-// signed-in navigation, never at install time.
+// (Vegas Wi-Fi is unreliable; the offline shell needs to load no matter what).
+// Keep this list public-only.
 const OFFLINE_URLS = ['/offline', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 const AUTH_PATHS = ['/today', '/schedule', '/leads', '/intel', '/debrief', '/morning', '/targets', '/pipeline', '/map', '/report', '/settings'];
 
@@ -28,7 +30,6 @@ self.addEventListener('install', (event) => {
       Promise.all(
         OFFLINE_URLS.map((url) =>
           cache.add(url).catch((err) => {
-            // Log but don't fail install
             // eslint-disable-next-line no-console
             console.warn('[sw] precache miss:', url, err && err.message);
           })
@@ -48,17 +49,18 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// Best-effort cleanup for clients upgrading from <= v15, which may still
+// hold cached auth HTML under the old /__authcache prefix. Sign-out posts
+// this; activate's cache-version sweep is the durable guarantee.
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'CLEAR_AUTH_CACHE') {
     event.waitUntil((async () => {
-      const cache = await caches.open(CACHE);
-      const keys = await cache.keys();
-      await Promise.all(
-        keys
-          .filter((request) => new URL(request.url).pathname.startsWith(AUTH_HTML_PREFIX + '/'))
-          .map((request) => cache.delete(request))
-      );
-      await broadcast('sync-complete', { detail: 'cache-cleared' });
+      try {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((k) => caches.delete(k).catch(() => {})));
+      } finally {
+        broadcast('sync-complete', { detail: 'cache-cleared' }).catch(() => {});
+      }
     })());
   }
 });
@@ -74,13 +76,29 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Navigations (HTML pages): stale-while-revalidate with offline fallback
-  if (request.mode === 'navigate' || (request.headers.get('accept') || '').includes('text/html')) {
+  const isHtml = request.mode === 'navigate' || (request.headers.get('accept') || '').includes('text/html');
+
+  // Authenticated HTML pages: network-only, with offline-shell fallback.
+  // We do NOT cache these — see header comment for rationale.
+  if (isHtml && isAuthHtml(url)) {
+    event.respondWith(
+      fetch(request).catch(async () => {
+        const cache = await caches.open(CACHE);
+        const offline = await cache.match('/offline');
+        return offline || new Response(
+          '<!doctype html><meta charset=utf-8><title>Offline</title><style>body{font-family:system-ui;text-align:center;padding:4rem 1rem;color:#14595B}</style><h1>Offline</h1><p>No network. Reconnect to load this page.</p>',
+          { headers: { 'Content-Type': 'text/html; charset=utf-8' }, status: 503 }
+        );
+      })
+    );
+    return;
+  }
+
+  // Public HTML (login, offline, etc.): stale-while-revalidate.
+  if (isHtml) {
     event.respondWith(
       caches.open(CACHE).then(async (cache) => {
-        const url = new URL(request.url);
-        const authKey = isAuthHtml(url) ? authCachePath(url) : `${url.pathname}${url.search}`;
-        const cacheKey = new Request(authKey);
+        const cacheKey = new Request(`${url.pathname}${url.search}`);
         const cached = await cache.match(cacheKey);
         const networkFetch = fetch(request)
           .then((response) => {
@@ -88,9 +106,6 @@ self.addEventListener('fetch', (event) => {
             const redirectedToLogin = response.redirected && finalUrl.pathname.startsWith('/login');
             if (response && response.ok && !redirectedToLogin) {
               cache.put(cacheKey, response.clone());
-              if (isAuthHtml(finalUrl)) {
-                broadcast('offline-ready', { path: finalUrl.pathname }).catch(() => {});
-              }
             }
             return response;
           })
@@ -109,7 +124,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Other assets (JS, CSS, images): stale-while-revalidate
+  // Other assets (JS, CSS, images): stale-while-revalidate.
   event.respondWith(
     caches.open(CACHE).then(async (cache) => {
       const cached = await cache.match(request);
@@ -123,6 +138,3 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
-function authCachePath(url) {
-  return `${AUTH_HTML_PREFIX}${url.pathname}${url.search}`;
-}

@@ -1,10 +1,10 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import { MapPin, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
+import { MapPin, ZoomIn, ZoomOut, Maximize2, Target as TargetIcon, X } from 'lucide-react';
 import type { Meeting, Tier } from '@/lib/types';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { toZonedTime, format as tzFormat } from 'date-fns-tz';
@@ -12,6 +12,8 @@ import { toZonedTime, format as tzFormat } from 'date-fns-tz';
 type BoothMapProps = {
   meetings: (Meeting & { target?: { company_name: string; tier: Tier } | null })[];
   date: string;
+  focusBooth?: string;
+  focusTarget?: string;
 };
 
 const TZ = 'America/Los_Angeles';
@@ -35,8 +37,17 @@ function tierColor(tier: Tier | undefined | null): string {
   return '#6B7280';
 }
 
-export function BoothMap({ meetings, date }: BoothMapProps) {
+export function BoothMap({ meetings, date, focusBooth, focusTarget }: BoothMapProps) {
   const [filter, setFilter] = useState<TierFilter>('all');
+  const planRef = useRef<HTMLDivElement | null>(null);
+
+  // When the user lands on the map from a target detail, scroll the
+  // floorplan into view so the focus banner + plan are immediately visible.
+  useEffect(() => {
+    if (focusBooth && planRef.current) {
+      planRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [focusBooth]);
 
   const dayMeetings = useMemo(() => {
     return meetings
@@ -46,7 +57,34 @@ export function BoothMap({ meetings, date }: BoothMapProps) {
   }, [meetings, date, filter]);
 
   return (
-    <div className="card overflow-hidden">
+    <div className="card overflow-hidden" ref={planRef}>
+      {/* Focus banner — shown when arriving from a target's "On map" link.
+          Booth coordinates aren't yet captured, so we can't draw a precise
+          marker; the banner makes the intent visible and Clear returns to
+          the unfocused view. Once public/booths.json exists, swap in a
+          pulsing overlay positioned to those coords. */}
+      {focusBooth && (
+        <div className="px-4 py-2.5 bg-tag-gold/15 border-b border-tag-gold/40 flex items-center gap-2 motion-fade-up">
+          <span className="w-7 h-7 rounded-full bg-tag-gold text-white flex items-center justify-center shrink-0 pulse-live">
+            <TargetIcon size={14} />
+          </span>
+          <div className="flex-1 min-w-0">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-tag-gold-dark">Looking for</div>
+            <div className="text-sm font-semibold leading-tight truncate">
+              {focusTarget ? <>{focusTarget} · </> : null}
+              <span className="font-mono">Booth {focusBooth}</span>
+            </div>
+          </div>
+          <Link
+            href={`/map?date=${date}`}
+            className="inline-flex items-center gap-1 px-2 py-1 rounded-btn text-[11px] font-medium text-tag-gold-dark hover:bg-tag-gold/20 shrink-0"
+            title="Clear focus"
+          >
+            <X size={12} /> Clear
+          </Link>
+        </div>
+      )}
+
       {/* Header */}
       <div className="px-4 py-3 border-b border-hairline flex items-center justify-between flex-wrap gap-2">
         <div>

@@ -44,8 +44,20 @@ export function SettingsClient({
   async function signOut() {
     const supabase = createSupabaseBrowserClient();
     await supabase.auth.signOut();
-    const reg = await navigator.serviceWorker?.ready;
-    reg?.active?.postMessage({ type: 'CLEAR_AUTH_CACHE' });
+    if ('serviceWorker' in navigator) {
+      try {
+        // Race against a 1.5s ceiling so a stuck/missing SW can't trap the
+        // user on the settings page. The activate-time cache wipe (version
+        // bump) is the durable guarantee; this post is best-effort polish.
+        const reg = await Promise.race<ServiceWorkerRegistration | undefined>([
+          navigator.serviceWorker.ready,
+          new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), 1500)),
+        ]);
+        reg?.active?.postMessage({ type: 'CLEAR_AUTH_CACHE' });
+      } catch {
+        // ignore — best effort
+      }
+    }
     window.location.href = '/login';
   }
 

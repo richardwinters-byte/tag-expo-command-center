@@ -13,7 +13,11 @@ const DAYS = [
   { iso: '2026-05-21', label: 'Thu' },
 ];
 
-export default async function MapPage({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
+export default async function MapPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string; booth?: string; target?: string }>;
+}) {
   const me = await getCurrentUser();
   if (!me) return null;
   const supabase = await createSupabaseServerClient();
@@ -22,6 +26,8 @@ export default async function MapPage({ searchParams }: { searchParams: Promise<
   // Default to today if it's within the show window; otherwise first show day
   const windowDays = DAYS.map((d) => d.iso);
   const date = params.date ?? (windowDays.includes(today) ? today : DAYS[0].iso);
+  const focusBooth = params.booth?.trim() || undefined;
+  const focusTarget = params.target?.trim() || undefined;
 
   const { data: meetings } = await supabase
     .from('meetings')
@@ -39,7 +45,7 @@ export default async function MapPage({ searchParams }: { searchParams: Promise<
           {DAYS.map((d) => (
             <Link
               key={d.iso}
-              href={`/map?date=${d.iso}`}
+              href={`/map?date=${d.iso}${focusBooth ? `&booth=${encodeURIComponent(focusBooth)}` : ''}${focusTarget ? `&target=${encodeURIComponent(focusTarget)}` : ''}`}
               className={`shrink-0 px-4 py-2 rounded-btn text-sm font-medium border ${
                 d.iso === date ? 'bg-tag-900 text-white border-tag-900' : 'bg-white border-hairline text-tag-ink'
               }`}
@@ -51,6 +57,8 @@ export default async function MapPage({ searchParams }: { searchParams: Promise<
         <BoothMap
           meetings={(meetings ?? []) as (Meeting & { target?: { company_name: string; tier: Tier } | null })[]}
           date={date}
+          focusBooth={focusBooth}
+          focusTarget={focusTarget}
         />
       </div>
     </>

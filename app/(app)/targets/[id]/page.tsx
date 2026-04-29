@@ -54,15 +54,38 @@ export default async function TargetDetail({ params }: { params: Promise<{ id: s
             </div>
             <div>
               <div className="text-tag-cold uppercase tracking-wider">Booth</div>
-              <div className="font-mono text-sm">{t.booth_number ?? '—'}</div>
+              {t.booth_number ? (
+                <Link
+                  href={`/map?booth=${encodeURIComponent(t.booth_number)}&target=${encodeURIComponent(t.company_name)}`}
+                  className="font-mono text-sm text-tag-700 hover:text-tag-900 underline-offset-2 hover:underline inline-flex items-center gap-1"
+                  title="Show this booth on the floor plan"
+                >
+                  {t.booth_number}
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                </Link>
+              ) : (
+                <div className="font-mono text-sm">—</div>
+              )}
             </div>
           </div>
         </div>
 
         {/* Quick actions */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className={`grid gap-2 ${t.booth_number ? 'grid-cols-3' : 'grid-cols-2'}`}>
           <Link href={`/schedule/new?target=${t.id}`} className="btn-primary">Book meeting</Link>
           <Link href={`/leads/new?target=${t.id}&company=${encodeURIComponent(t.company_name)}`} className="btn-outline">Add lead</Link>
+          {t.booth_number && (
+            <Link
+              href={`/map?booth=${encodeURIComponent(t.booth_number)}&target=${encodeURIComponent(t.company_name)}`}
+              className="btn-outline"
+              title="Show on floor plan"
+            >
+              On map
+            </Link>
+          )}
         </div>
 
         {/* Opener */}
